@@ -14,13 +14,13 @@ import java.sql.SQLException;
  */
 public class DBUtil {
     /** The JDBC URL for the MySQL database connection */
-    private static final String URL = "jdbc:mysql://localhost:3307/cookbook?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static final String URL = "jdbc:mysql://localhost:3306/cookbook?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
     
     /** The username for database authentication */
-    private static final String USER = "root";
+    private static final String USER = "cookbook";
     
     /** The password for database authentication */
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "admin123";
 
     /**
      * Establishes and returns a new connection to the MySQL database.
