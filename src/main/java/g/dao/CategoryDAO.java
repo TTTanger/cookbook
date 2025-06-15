@@ -21,7 +21,6 @@ public class CategoryDAO {
             return rowsAffected > 0;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -37,7 +36,6 @@ public class CategoryDAO {
             return rowsAffected > 0;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -51,7 +49,6 @@ public class CategoryDAO {
             System.out.println("Rows affected: " + rowsAffected);
             return rowsAffected > 0;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -67,7 +64,6 @@ public class CategoryDAO {
             return rowsAffected > 0;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -87,7 +83,6 @@ public class CategoryDAO {
             }
             return recipes;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -102,7 +97,6 @@ public class CategoryDAO {
             }
             return categories;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }

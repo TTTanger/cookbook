@@ -46,7 +46,6 @@ public class DBUtil {
                 conn.close();
             } catch (SQLException e) {
                 System.err.println("Error closing connection!");
-                e.printStackTrace();
             }
         }
     }
