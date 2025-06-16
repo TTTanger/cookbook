@@ -4,6 +4,9 @@ public class Ingredient {
     private int ingredientValue;
     private String ingredientName;
 
+    public Ingredient() {
+    }
+
     public Ingredient(int ingredientValue, String ingredientName) {
         this.ingredientValue = ingredientValue;
         this.ingredientName = ingredientName;

@@ -11,6 +11,9 @@ public class Recipe {
     private String imageAddr;
     private ArrayList<Ingredient> ingredients;
 
+    public Recipe() {
+    }
+
     public Recipe(int recipeId, String title, int prepTime, int cookTime, String instruction, String imageAddr, ArrayList<Ingredient> ingredients) {
         this.recipeId = recipeId;
         this.title = title;
