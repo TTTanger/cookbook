@@ -105,11 +105,11 @@ public class RecipeService {
 
     public static void main(String[] args) {
 
-        RecipeDAO recipeDAO = new RecipeDAO();
-        IngredientDAO ingredientDAO = new IngredientDAO();
-        ImageDAO imageDAO = new ImageDAO();
+        // RecipeDAO recipeDAO = new RecipeDAO();
+        // IngredientDAO ingredientDAO = new IngredientDAO();
+        // ImageDAO imageDAO = new ImageDAO();
 
-        RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO, imageDAO);
+        // RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO, imageDAO);
 
         // // create
         // boolean isCreated = recipeService.createRecipe(
