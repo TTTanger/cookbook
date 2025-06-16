@@ -386,14 +386,14 @@
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GroupNode>
-              <y:Geometry height="781.7260120744861" width="940.8878335793333" x="-489.19426445998505" y="820.2328134079557"/>
+              <y:Geometry height="846.2322219174181" width="940.8878335793333" x="-489.19426445998505" y="755.7266035650238"/>
               <y:Fill color="#F5F5F5" transparent="false"/>
               <y:BorderStyle color="#000000" type="dashed" width="1.0"/>
               <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#EBEBEB" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="940.8878335793333" x="0.0" xml:space="preserve" y="0.0">Service</y:NodeLabel>
               <y:Shape type="roundrectangle"/>
               <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="43" bottomF="43.35125093632951" left="0" leftF="0.0" right="11" rightF="11.38248229712849" top="0" topF="0.0"/>
+              <y:BorderInsets bottom="43" bottomF="43.35125093632951" left="0" leftF="0.0" right="11" rightF="11.38248229712849" top="11" topF="10.751034973822016"/>
             </y:GroupNode>
             <y:GroupNode>
               <y:Geometry height="50.0" width="50.0" x="0.0" y="60.0"/>
@@ -428,13 +428,17 @@
           <data key="d4" xml:space="preserve"/>
           <data key="d6">
             <y:UMLClassNode>
-              <y:Geometry height="28.0" width="215.92589318885143" x="-418.4485415576996" y="857.6092782517057"/>
+              <y:Geometry height="135.51034973821993" width="215.92589318885143" x="-418.4485415576996" y="803.8541033825958"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="126.12255859375" x="44.901667297550716" xml:space="preserve" y="3.0">ResponsesPackage<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
-                <y:AttributeLabel xml:space="preserve"/>
-                <y:MethodLabel xml:space="preserve"/>
+                <y:AttributeLabel xml:space="preserve">Recipe recipe
+ List&lt;Ingredient&gt; ingredients
+String imagePath</y:AttributeLabel>
+                <y:MethodLabel xml:space="preserve">getRecipe():Recipe
+getIngredients():List&lt;Ingredient&gt;
+getImagePath():String</y:MethodLabel>
               </y:UML>
             </y:UMLClassNode>
           </data>
@@ -488,16 +492,12 @@
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="92.892578125" x="99.99179219992192" xml:space="preserve" y="3.0">RecipeService<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
                 <y:AttributeLabel xml:space="preserve">-recipeEntities: ArrayList[Recipe]</y:AttributeLabel>
-                <y:MethodLabel xml:space="preserve">// Fetch all the data using DAO
-
-
-+sendRecipeResponse(ArrayList[Recipe]): void
-
-+createRecipe(Recipe): boolean
-+updateRecipe(Recipe): boolean
-+deleteRecipe(int): boolean
-
-+bindIngredients(String, String, int): boolean</y:MethodLabel>
+                <y:MethodLabel xml:space="preserve">+createRecipe(String,int,int,String,String): boolean
++deleteRecipe(int):boolean
++updateRecipe(int,String,int,int,String,String): boolean
++getRecipeById(int):RecipeResponse
++getAllRecipes():List&lt;RecipeResponse&gt;
+</y:MethodLabel>
               </y:UML>
             </y:UMLClassNode>
           </data>
