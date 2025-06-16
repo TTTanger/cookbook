@@ -1,44 +1,44 @@
 package g.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import g.dao.CategoryDAO;
+import g.dao.RecipeDAO;
 import g.model.Category;
+import g.model.Recipe;
 
 public class CategoryService {
     private CategoryDAO categoryDAO;
-    // private RecipeDAO recipeDAO; 
+    private RecipeDAO recipeDAO; 
 
-    public boolean addToCategory(int recipeId, String categoryName) {
+    public CategoryService() {
+        categoryDAO = new CategoryDAO();
+        recipeDAO = new RecipeDAO();
+    }
+
+    public boolean addToCategory(String recipeTitle, String categoryName) {
         // Logic to add a recipe to a category
         // This would typically involve calling a method from recipeDAO
-        // recipeDAO.addRecipeToFavorites(recipeId);
-        if (categoryDAO == null) {
-            categoryDAO = new CategoryDAO();
-        }
-        boolean ifAdd = categoryDAO.addToCategory(recipeId, categoryName);
+        boolean ifAdd = categoryDAO.addToCategory(recipeTitle, categoryName);
         if (ifAdd) {
-            System.out.println("Recipe with ID " + recipeId + " added to category '" + categoryName + "'.");
+            System.out.println("Recipe" + recipeTitle + " added to category '" + categoryName + "'.");
             return true;
         } else {
-            System.out.println("Failed to add recipe with ID " + recipeId + " to category '" + categoryName + "'.");
+            System.out.println("Failed to add recipe" + recipeTitle + " to category '" + categoryName + "'.");
             return false;
         }
     }
 
-    public boolean removeFromFavorite(int recipeId, String categoryName) {
+    public boolean removeFromCategory(String recipeTitle, String categoryName) {
         // Logic to remove a recipe from favorites
         // This would typically involve calling a method from recipeDAO
-        // recipeDAO.removeRecipeFromFavorites(recipeId);
-        if (categoryDAO == null) {
-            categoryDAO = new CategoryDAO();
-        }
-        boolean ifRemove = categoryDAO.removeFromCategory(recipeId, categoryName);
+        boolean ifRemove = categoryDAO.removeFromCategory(recipeTitle, categoryName);
         if (ifRemove) {
-            System.out.println("Recipe with ID " + recipeId + " removed from category '" + categoryName + "'.");
+            System.out.println("Recipe" + recipeTitle + " removed from category '" + categoryName + "'.");
             return true;
         } else {
-            System.out.println("Failed to remove recipe with ID " + recipeId + " from category '" + categoryName + "'.");
+            System.out.println("Failed to remove recipe" + recipeTitle + " from category '" + categoryName + "'.");
             return false;
         }
     }
@@ -47,18 +47,11 @@ public class CategoryService {
         if (categoryDAO == null) {
             categoryDAO = new CategoryDAO();
         }
-        // Logic to retrieve all categories
-        // This would typically involve calling a method from categoryDAO
         ArrayList<Category> categories = categoryDAO.getAllCategories();
         return categories;
     }
 
     public boolean createCategory(String categoryName) {
-        if (categoryDAO == null) {
-            categoryDAO = new CategoryDAO();
-        }
-        // Logic to create a new category
-        // This would typically involve calling a method from categoryDAO
         boolean ifCreate = categoryDAO.createCategory(categoryName);
         if (ifCreate) {
             System.out.println("Category '" + categoryName + "' created successfully.");
@@ -70,9 +63,6 @@ public class CategoryService {
     }
 
     public boolean deleteCategory(String categoryName) {
-        if (categoryDAO == null) {
-            categoryDAO = new CategoryDAO();
-        }
         // Logic to delete a category
         // This would typically involve calling a method from categoryDAO
         boolean ifDelete = categoryDAO.deleteCategory(categoryName);
@@ -85,13 +75,33 @@ public class CategoryService {
         }
     }
 
-    public void getRecipesByCategory(String categoryName) {
-        if (categoryDAO == null) {
-            categoryDAO = new CategoryDAO();
-        }
+    public ArrayList<Recipe> getRecipesByCategory(String categoryName) {
         // First, we would retrieve the recipes associated with the category
-        
+        List<String> recipeTitles = categoryDAO.getRecipesByCategory(categoryName);
+
+        // Then, we would retrieve the actual recipes from the recipeDAO
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        for (String title : recipeTitles) {
+            Recipe recipe = recipeDAO.getRecipeByTitle(title);
+            recipes.add(recipe);
+        }
         // recipeDAO.getFavoritesByCategory(categoryName);
         System.out.println("Retrieving favorites for category: " + categoryName);
+        return recipes;
+    }
+
+    public static void main(String[] args) {
+        CategoryService categoryService = new CategoryService();
+        categoryService.getAllCategories();
+        categoryService.createCategory("Jiachangcai");
+        categoryService.addToCategory("Hongshaorou", "Jiachangcai");
+        categoryService.addToCategory("Jiaozi", "Jiachangcai");
+        ArrayList<Recipe> recipes = categoryService.getRecipesByCategory("Jiachangcai");
+        for (Recipe recipe : recipes) {
+            System.out.println(recipe.getRecipeId() + recipe.getTitle());
+        }
+        // categoryService.removeFromCategory(1, "Desserts");
+        // categoryService.deleteCategory("Desserts");
+        categoryService.getAllCategories();
     }
 }
