@@ -99,37 +99,37 @@ public class RecipeDAO {
         }
     }
 
-    public Recipe getRecipeByTitle(String title) {
-        String sql = "SELECT * FROM recipe WHERE title = ?";
-        Recipe recipe = null;
+    public List<Recipe> getRecipesByTitle(String keyword) {
+        String sql = "SELECT * FROM recipe WHERE title LIKE ?";
+        List<Recipe> recipes = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, title);
+            stmt.setString(1, "%" + keyword + "%");
 
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    recipe = new Recipe();
+                while (rs.next()) {
+                    Recipe recipe = new Recipe();
                     recipe.setRecipeId(rs.getInt("recipe_id"));
                     recipe.setTitle(rs.getString("title"));
                     recipe.setPrepTime(rs.getInt("prep_time"));
                     recipe.setCookTime(rs.getInt("cook_time"));
                     recipe.setInstruction(rs.getString("instruction"));
 
+                    recipes.add(recipe);
                     System.out.println("Recipe found: " + recipe.getTitle());
-                } else {
-                    System.out.println("No recipe found with title: " + title);
                 }
             }
 
-            return recipe;
+            return recipes;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return recipes; // Return empty list if exception occurs
         }
     }
+
 
     public List<Recipe> getAllRecipes() {
         String sql = "SELECT * FROM recipe";
@@ -197,7 +197,7 @@ public class RecipeDAO {
         // } else {
         //     System.out.println("No recipe found for ID: " + 1);
         // }
-        // Recipe recipe = recipeDAO.getRecipeByTitle("Test");
+        // Recipe recipe = recipeDAO.getRecipesByTitle("Test");
         // if (recipe != null && recipe.getTitle() != null) {
         //     System.out.println("Found recipe: " + recipe.getTitle());
         //     System.out.println("Prep time: " + recipe.getPrepTime());
