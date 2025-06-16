@@ -184,10 +184,10 @@ public class RecipeDAO {
     }
 
     public static void main(String[] args) {
-        //RecipeDAO recipeDAO = new RecipeDAO();
-        //recipeDAO.createRecipe("New Recipe", 30, 60, "Instructions for new recipe", "img/new_recipe.jpg");
-        //recipeDAO.deleteRecipe(4);
-        //recipeDAO.updateRecipe(2, "Updated Recipe", 25, 55, "Updated instructions", "img/updated_recipe.jpg");
+        // RecipeDAO recipeDAO = new RecipeDAO();
+        // recipeDAO.createRecipe("New Recipe", 30, 60, "Instructions for new recipe", "img/new_recipe.jpg");
+        // recipeDAO.deleteRecipe(6);
+        // recipeDAO.updateRecipe(2, "Updated Recipe", 25, 55, "Updated instructions", "img/updated_recipe.jpg");
         // Recipe recipe = recipeDAO.getRecipeById(6);
         // if (recipe != null && recipe.getTitle() != null) {
         //     System.out.println("Found recipe: " + recipe.getTitle());
