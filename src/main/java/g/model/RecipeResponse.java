@@ -14,8 +14,6 @@ public class RecipeResponse {
         this.imagePath = imagePath;
     }
 
-
-
     public Recipe getRecipe() {
         return recipe;
     }
