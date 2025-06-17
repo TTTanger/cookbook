@@ -88,6 +88,19 @@ public class RecipeService {
         return new RecipeResponse(recipe, ingredients, imagePath);
     }
 
+    // Get recipes by title
+    public List<RecipeResponse> getRecipesByTitle(String title) {
+        List<Recipe> recipes = recipeDAO.getRecipesByTitle(title);
+        List<RecipeResponse> responses = new ArrayList<>();
+        for (Recipe recipe : recipes) {
+            int recipeId = recipe.getRecipeId();
+            List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipeId);
+            String imagePath = imageDAO.getImageByRecipeId(recipeId);
+            responses.add(new RecipeResponse(recipe, ingredients, imagePath));
+        }
+        return responses;
+    }
+
     // Get all recipes
     public List<RecipeResponse> getAllRecipes() {
         List<Recipe> recipes = recipeDAO.getAllRecipes();
@@ -103,13 +116,13 @@ public class RecipeService {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
 
-        RecipeDAO recipeDAO = new RecipeDAO();
-        IngredientDAO ingredientDAO = new IngredientDAO();
-        ImageDAO imageDAO = new ImageDAO();
+        // RecipeDAO recipeDAO = new RecipeDAO();
+        // IngredientDAO ingredientDAO = new IngredientDAO();
+        // ImageDAO imageDAO = new ImageDAO();
 
-        RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO, imageDAO);
+        // RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO, imageDAO);
 
         // // create
         // boolean isCreated = recipeService.createRecipe(
