@@ -3,6 +3,8 @@ package g.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import g.model.Category;
+import g.model.Recipe;
 import g.model.RecipeResponse;
 
 public class SearchService {
@@ -18,14 +20,19 @@ public class SearchService {
     public List<RecipeResponse> searchRecipes(String title, String categoryName) {
         if (title != null && !title.trim().isEmpty()) {
             return recipeService.getRecipesByTitle(title);
-        } else if (categoryName != null && !categoryName.trim().isEmpty()) {
-            List<Integer> recipeIds = CategoryService.getRecipesByCategory(categoryName);
+        } 
+        else if (categoryName != null && !categoryName.trim().isEmpty()) {
+            Category category = catogoryService.getCategoryWithRecipesByCategoryName(categoryName);
+            List<Recipe> recipes = category.getRecipes();
             List<RecipeResponse> responses = new ArrayList<>();
-            for (Integer recipeId : recipeIds) {
-                responses.add(recipeService.getRecipeById(recipeId));
+            for (Recipe recipe : recipes) {
+                int recipeId = recipe.getRecipeId();
+                RecipeResponse recipesWithInfos = recipeService.getRecipeById(recipeId);
+                responses.add(recipesWithInfos);
             }
             return responses;
-        } else {
+        } 
+        else {
             return new ArrayList<>();
         }
     }

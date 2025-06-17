@@ -3,22 +3,14 @@ package g.model;
 import java.util.List;
 
 public class Category {
-    private String categoryName;
     private int categoryId;
-    private List<Integer> recipeIds;
+    private String categoryName;
+    private List<Recipe> recipes;
 
-    public Category(String categoryName, int categoryId, List<Integer> recipeIds) {
-        this.categoryName = categoryName;
+    public Category(int categoryId, String categoryName, List<Recipe> recipes) {
         this.categoryId = categoryId;
-        this.recipeIds = recipeIds;
-    }
-
-    public String getCategoryName() {
-        return this.categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+        this.recipes = recipes;
     }
 
     public int getCategoryId() {
@@ -29,18 +21,19 @@ public class Category {
         this.categoryId = categoryId;
     }
 
-    public List<Integer> getRecipeIds() {
-        return this.recipeIds;
+    public String getCategoryName() {
+        return this.categoryName;
     }
 
-    public void setRecipeIds(List<Integer> recipeIds) {
-        this.recipeIds = recipeIds;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    @Override
-    public String toString() {
-        return "Category{" +
-                "categoryName='" + categoryName + '\'' +
-                '}';
+    public List<Recipe> getRecipes() {
+        return this.recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 }
