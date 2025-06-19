@@ -109,7 +109,7 @@
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
                 <y:AttributeLabel xml:space="preserve">-RecipeDAO
 -IngredientDAO</y:AttributeLabel>
-                <y:MethodLabel xml:space="preserve">+createRecipe(RecipeDetailRequest): int
+                <y:MethodLabel xml:space="preserve">+createRecipe(RecipeDetailRequest): boolean
 +deleteRecipe(int):boolean
 +updateRecipe(RecipeDetailRequest): boolean
 +getRecipeById(int):Response

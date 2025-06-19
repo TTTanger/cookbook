@@ -21,7 +21,7 @@ public class RecipeService {
         this.ingredientDAO = ingredientDAO;
     }
 
-    public int createRecipe(RecipeDetailRequest request) {
+    public boolean createRecipe(RecipeDetailRequest request) {
 
         Recipe recipe = request.getRecipe();
         List<Ingredient> ingredients = request.getIngredients();
@@ -37,7 +37,7 @@ public class RecipeService {
  
         if (createRecipeResult==-1) {
             System.out.println("Failed to create recipe");
-            return -1;
+            return false;
         }
 
         for (Ingredient ingredient : ingredients) {
@@ -48,11 +48,11 @@ public class RecipeService {
             );
             if (createIngredientResult == -1) {
                 System.out.println("Failed to insert ingredient: " + ingredient);
-                return -1;
+                return false;
             }
         }
     
-        return createRecipeResult;
+        return true;
     }
 
     public boolean deleteRecipe(int recipeId) {
