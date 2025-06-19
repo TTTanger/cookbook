@@ -77,7 +77,10 @@ public class CategoryDAO {
 
         // CategoryDAO categorydao = new CategoryDAO();
         
-        // categorydao.createCategory("test3");
+        // categorydao.createCategory("tc1");
+        // categorydao.createCategory("tc2");
+        // categorydao.createCategory("tc3");
+        // categorydao.createCategory("tc4");
         // categorydao.deleteCategory(13);
         // categorydao.updateCategory(14, "update");
         // List<Category> categories =categorydao.getAllCategories();

@@ -109,12 +109,13 @@
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
                 <y:AttributeLabel xml:space="preserve">-RecipeDAO
 -IngredientDAO</y:AttributeLabel>
-                <y:MethodLabel xml:space="preserve">+createRecipe(String,int,int,String,String,int): boolean
+                <y:MethodLabel xml:space="preserve">+createRecipe(RecipeDetailRequest): int
 +deleteRecipe(int):boolean
-+updateRecipe(int,String,int,int,String,String,int): boolean
++updateRecipe(RecipeDetailRequest): boolean
 +getRecipeById(int):Response
++getRecipesByTitle(string):List&lt;Response&gt;
 +getAllRecipes():List&lt;Response&gt;
-+getRecipeSummary(List&lt;int&gt;):List&lt;Response&gt;</y:MethodLabel>
+//+getRecipeSummary(List&lt;int&gt;):List&lt;Response&gt;</y:MethodLabel>
               </y:UML>
             </y:UMLClassNode>
           </data>
@@ -160,7 +161,7 @@
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="75.51904296875" x="117.79390375148833" xml:space="preserve" y="3.0">RecipeDAO<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
                 <y:AttributeLabel xml:space="preserve">-recipeForm</y:AttributeLabel>
-                <y:MethodLabel xml:space="preserve">+createRecipe(String,int,int,String,String,int):boolean
+                <y:MethodLabel xml:space="preserve">+createRecipe(String,int,int,String,String,int):int
 +deleteRecipe(int):boolean
 +updateRecipe(int,String,int,int,String,String,int):boolean
 +getRecipeById(int):recipe
@@ -567,6 +568,7 @@
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="66.83544921875" x="94.35308568575601" xml:space="preserve" y="3.0">Ingredient<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
                 <y:AttributeLabel xml:space="preserve">-pairId: int
+-recipeId: int
 -ingredientName: String
 -ingredientValue: int</y:AttributeLabel>
                 <y:MethodLabel xml:space="preserve">+constructor

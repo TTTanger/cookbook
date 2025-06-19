@@ -11,7 +11,7 @@ import g.utils.DBUtil;
 
 public class IngredientDAO {
 
-    public boolean addIngredient(int recipeId, String ingredientName, int ingredientValue) {
+    public int addIngredient(int recipeId, String ingredientName, int ingredientValue) {
         String sql = "INSERT INTO ingredient (recipe_id, ingredient_name, ingredient_value) VALUES (?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -22,11 +22,22 @@ public class IngredientDAO {
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
-            return rowsAffected > 0;
+
+            if (rowsAffected > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int pairId = generatedKeys.getInt(1);
+                        System.out.println("Generated Recipe ID: " + pairId);
+                        return pairId;
+                    }
+                }
+            }
+
+            return -1;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
     
@@ -65,7 +76,7 @@ public class IngredientDAO {
         }
     }
 
-    public boolean updateIngredientValue(int pairId, int recipeId, String ingredientName, int value) {
+    public boolean updateIngredient(int pairId, int recipeId, String ingredientName, int value) {
         String sql = "UPDATE ingredient SET ingredient_name = ?, ingredient_value = ? WHERE pair_id = ? AND recipe_id = ?";
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -119,7 +130,9 @@ public class IngredientDAO {
 
         // IngredientDAO dao = new IngredientDAO();
 
-        // boolean addResult = dao.addIngredient(1, "Meat", 4);
+        // boolean addResult = dao.addIngredient(4, "Letter", 4);
+        // boolean addResult1 = dao.addIngredient(4, "Carrot", 2);
+
         // System.out.println("Add ingredient result: " + addResult);
 
         // boolean deleteOneResult = dao.deleteIngredient(2, 1);
