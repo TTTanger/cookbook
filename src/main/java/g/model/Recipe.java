@@ -1,27 +1,25 @@
 package g.model;
 
-import java.util.ArrayList;
-
 public class Recipe {
     private int recipeId;
     private String title;
     private int prepTime;
     private int cookTime;
     private String instruction;
-    private String imageAddr;
-    private ArrayList<Ingredient> ingredients;
+    private String imgAddr;
+    private int serve;
 
     public Recipe() {
     }
 
-    public Recipe(int recipeId, String title, int prepTime, int cookTime, String instruction, String imageAddr, ArrayList<Ingredient> ingredients) {
+    public Recipe(int recipeId, String title, int prepTime, int cookTime, String instruction, String imgAddr, int serve) {
         this.recipeId = recipeId;
         this.title = title;
         this.prepTime = prepTime;
         this.cookTime = cookTime;
         this.instruction = instruction;
-        this.imageAddr = imageAddr;
-        this.ingredients = ingredients;
+        this.imgAddr = imgAddr;
+        this.serve = serve;
     }
 
     public int getRecipeId() {
@@ -64,20 +62,20 @@ public class Recipe {
         this.instruction = instruction;
     }
 
-    public String getImageAddr() {
-        return this.imageAddr;
+    public String getImgAddr() {
+        return this.imgAddr;
     }
 
-    public void setImageAddr(String imageAddr) {
-        this.imageAddr = imageAddr;
+    public void setImgAddr(String imgAddr) {
+        this.imgAddr = imgAddr;
     }
 
-    public ArrayList<Ingredient> getIngredients() {
-        return this.ingredients;
+    public int getServe() {
+        return this.serve;
     }
 
-    public void setIngredients(ArrayList<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+    public void setServe(int serve) {
+        this.serve = serve;
     }
     
     @Override
@@ -88,8 +86,8 @@ public class Recipe {
                 ", prepTime=" + prepTime +
                 ", cookTime=" + cookTime +
                 ", instruction='" + instruction + '\'' +
-                ", imageAddr='" + imageAddr + '\'' +
-                ", ingredients=" + ingredients +
+                ", imgAddr='" + imgAddr + '\'' +
+                ", serve=" + serve +
                 '}';
     }
     

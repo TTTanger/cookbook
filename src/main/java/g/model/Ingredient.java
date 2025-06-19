@@ -1,39 +1,47 @@
 package g.model;
 
 public class Ingredient {
-    private int ingredientValue;
+
+    private int pairId;
     private String ingredientName;
+    private int ingredientValue;
 
     public Ingredient() {
     }
 
-    public Ingredient(int ingredientValue, String ingredientName) {
-        this.ingredientValue = ingredientValue;
+    public Ingredient(int pairId, String ingredientName,int ingredientValue) {
+        this.pairId = pairId;
         this.ingredientName = ingredientName;
+        this.ingredientValue = ingredientValue;
+
     }
 
-    public int getIngredientValue() {
-        return ingredientValue;
+    public int getPairId(){
+        return pairId;
     }
 
     public String getIngredientName() {
         return ingredientName;
     }
 
+    public void setIngredientName(String ingredientName) {
+        this.ingredientName = ingredientName;
+    }    
+    
+    public int getIngredientValue() {
+        return ingredientValue;
+    }
+
     public void setIngredientValue(int ingredientValue) {
         this.ingredientValue = ingredientValue;
     }
 
-    public void setIngredientName(String ingredientName) {
-        this.ingredientName = ingredientName;
-    }
-    
-    @Override
+    @Override 
     public String toString() {
         return "Ingredient{" +
-                "ingredientValue=" + ingredientValue +
+                "pairId" + pairId + 
                 ", ingredientName='" + ingredientName + '\'' +
+                ", ingredientValue=" + ingredientValue + 
                 '}';
     }
-
 }

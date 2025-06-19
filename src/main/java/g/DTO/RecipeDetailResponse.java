@@ -1,14 +1,17 @@
-package g.model;
+package g.DTO;
 
 import java.util.List;
 
-public class RecipeResponse {
+import g.model.Ingredient;
+import g.model.Recipe;
+
+public class RecipeDetailResponse {
 
     private Recipe recipe;
     private List<Ingredient> ingredients;
     private String imagePath;
 
-    public RecipeResponse(Recipe recipe, List<Ingredient> ingredients, String imagePath) {
+    public RecipeDetailResponse(Recipe recipe, List<Ingredient> ingredients, String imagePath) {
         this.recipe = recipe;
         this.ingredients = ingredients;
         this.imagePath = imagePath;
