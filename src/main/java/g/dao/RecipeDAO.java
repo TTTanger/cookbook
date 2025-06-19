@@ -193,9 +193,9 @@ public class RecipeDAO {
 
     public static void main(String[] args) {
 
-        // RecipeDAO recipeDAO = new RecipeDAO();
+        RecipeDAO recipeDAO = new RecipeDAO();
 
-        // recipeDAO.createRecipe("Test", 30, 60, "Instructions for test recipe", "img/test_recipe.jpg",5);
+        recipeDAO.createRecipe("Test12", 30, 60, "Instructions for test recipe", "img/test_recipe.jpg",5);
 
         // recipeDAO.deleteRecipe(3);
 

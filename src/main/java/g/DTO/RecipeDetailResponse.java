@@ -9,12 +9,10 @@ public class RecipeDetailResponse {
 
     private Recipe recipe;
     private List<Ingredient> ingredients;
-    private String imagePath;
 
-    public RecipeDetailResponse(Recipe recipe, List<Ingredient> ingredients, String imagePath) {
+    public RecipeDetailResponse(Recipe recipe, List<Ingredient> ingredients) {
         this.recipe = recipe;
         this.ingredients = ingredients;
-        this.imagePath = imagePath;
     }
 
     public Recipe getRecipe() {
@@ -25,9 +23,6 @@ public class RecipeDetailResponse {
         return ingredients;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
 
 
 }
