@@ -4,17 +4,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import g.DTO.RecipeDetailRequest;
+import g.DTO.RecipeDetailResponse;
 import g.dao.IngredientDAO;
 import g.dao.RecipeDAO;
 import g.model.Ingredient;
 import g.model.Recipe;
-import g.DTO.RecipeDetailRequest;
-import g.DTO.RecipeDetailResponse;
 
 public class RecipeService {
 
-    private RecipeDAO recipeDAO;
-    private IngredientDAO ingredientDAO;
+    private final RecipeDAO recipeDAO;
+    private final IngredientDAO ingredientDAO;
+
+    // Constructor to initialize DAOs
+    public RecipeService() {
+        this.recipeDAO = new RecipeDAO();
+        this.ingredientDAO = new IngredientDAO();
+    }
 
     public RecipeService(RecipeDAO recipeDAO, IngredientDAO ingredientDAO) {
         this.recipeDAO = recipeDAO;
