@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>g</groupId>
     <artifactId>cookbook</artifactId>
@@ -25,15 +25,16 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version> 
         </dependency>
+
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>17</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -43,6 +44,22 @@
                 <configuration>
                     <mainClass>g.App</mainClass>
                 </configuration>
+                <executions>
+                <!-- 主应用启动 -->
+                <execution>
+                    <id>main-app</id>
+                    <configuration>
+                        <mainClass>g.App</mainClass>
+                    </configuration>
+                </execution>
+                <!-- 组件测试启动 -->
+                <execution>
+                    <id>component-test</id>
+                    <configuration>
+                        <mainClass>g.ComponentTester</mainClass>
+                    </configuration>
+                </execution>
+            </executions>
             </plugin>
         </plugins>
     </build>

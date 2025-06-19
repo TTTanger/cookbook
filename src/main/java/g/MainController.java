@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 public class MainController {
 
     @FXML
-    public void initialize() throws IOException {
+    public void goToMain() throws IOException {
         App.setRoot("main");
     }
 }
