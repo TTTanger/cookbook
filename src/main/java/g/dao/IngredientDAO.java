@@ -119,7 +119,7 @@ public class IngredientDAO {
 
         // IngredientDAO dao = new IngredientDAO();
 
-        // boolean addResult = dao.addIngredient(1, "Rice", 10);
+        // boolean addResult = dao.addIngredient(1, "Meat", 4);
         // System.out.println("Add ingredient result: " + addResult);
 
         // boolean deleteOneResult = dao.deleteIngredient(2, 1);

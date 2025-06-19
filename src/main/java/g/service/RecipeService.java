@@ -3,24 +3,21 @@ package g.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import g.dao.ImageDAO;
 import g.dao.IngredientDAO;
 import g.dao.RecipeDAO;
 import g.model.Ingredient;
 import g.model.Recipe;
-import g.model.RecipeResponse;
+import g.DTO.RecipeDetailResponse;
 
 public class RecipeService {
 
     private RecipeDAO recipeDAO;
     private IngredientDAO ingredientDAO;
-    private ImageDAO imageDAO;
 
     // Constructor: inject DAOs from outside
-    public RecipeService(RecipeDAO recipeDAO, IngredientDAO ingredientDAO, ImageDAO imageDAO) {
+    public RecipeService(RecipeDAO recipeDAO, IngredientDAO ingredientDAO) {
         this.recipeDAO = recipeDAO;
         this.ingredientDAO = ingredientDAO;
-        this.imageDAO = imageDAO;
     }
 
     // Create a new recipe
@@ -74,18 +71,15 @@ public class RecipeService {
     }
 
     // Get a recipe by ID
-    public RecipeResponse getRecipeById(int recipeId) {
-        // Step 1: Get the recipe
+    public RecipeDetailResponse getRecipeById(int recipeId) {
+   
         Recipe recipe = recipeDAO.getRecipeById(recipeId);
 
-        // Step 2: Get related ingredients
         List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipeId);
 
-        // Step 3: Get image path (if stored separately)
-        String imagePath = imageDAO.getImageByRecipeId(recipeId);
+        RecipeDetailResponse response = new RecipeDetailResponse(recipe, ingredients);
 
-        // Step 4: Combine into response
-        return new RecipeResponse(recipe, ingredients, imagePath);
+        return response;
     }
 
     // Get recipes by title
@@ -118,11 +112,10 @@ public class RecipeService {
 
     public static void main(String[] args) { 
 
-        // RecipeDAO recipeDAO = new RecipeDAO();
-        // IngredientDAO ingredientDAO = new IngredientDAO();
-        // ImageDAO imageDAO = new ImageDAO();
+        RecipeDAO recipeDAO = new RecipeDAO();
+        IngredientDAO ingredientDAO = new IngredientDAO();
+        RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO);
 
-        // RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO, imageDAO);
 
         // // create
         // boolean isCreated = recipeService.createRecipe(
@@ -142,14 +135,19 @@ public class RecipeService {
         // boolean isUpdated = recipeService.updateRecipe(10,"Updated Pasta", 15,25,"Boil pasta, add new sauce.","updated_pasta.jpg");
         // System.out.println("Update result: " + isUpdated);
 
-        // // getById
-        // RecipeResponse result = recipeService.getRecipeById(10);
-        // System.out.println("\n=== Get By ID ===");
-        // System.out.println("ID: " + result.getRecipe().getRecipeId());
-        // System.out.println("Title: " + result.getRecipe().getTitle());
-        // System.out.println("Instruction: " + result.getRecipe().getInstruction());
-        // System.out.println("Image Path: " + result.getImagePath());
-        // System.out.println("Ingredients: " + result.getIngredients());
+        // getById
+        int testRecipeId = 1;
+        RecipeDetailResponse response = recipeService.getRecipeById(testRecipeId);
+
+        if (response != null) {
+            System.out.println("Recipe: " + response.getRecipe());
+            System.out.println("Ingredients: ");
+            for (Ingredient ingredient : response.getIngredients()) {
+                System.out.println(ingredient);
+            }
+        } else {
+            System.out.println("No recipe found with ID: " + testRecipeId);
+        }
 
         // // getAll
         // System.out.println("\n=== All Recipes ===");
