@@ -11,8 +11,8 @@ import g.utils.DBUtil;
 
 public class RecipeDAO {
     
-    public boolean createRecipe(String title, int prepTime, int cookTime, String instruction, String imgAddr) {
-        String sql = "INSERT INTO recipe (title, prep_time, cook_time, instruction, img_addr) VALUES (?, ?, ?, ?, ?)";
+    public boolean createRecipe(String title, int prepTime, int cookTime, String instruction, String imgAddr, int serve) {
+        String sql = "INSERT INTO recipe (title, prep_time, cook_time, instruction, img_addr, serve) VALUES (?, ?, ?, ?, ?,?)";
         try (Connection conn = DBUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, title);
@@ -20,6 +20,7 @@ public class RecipeDAO {
             stmt.setInt(3, cookTime);
             stmt.setString(4, instruction);
             stmt.setString(5, imgAddr);
+            stmt.setInt(6, serve);
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
@@ -47,8 +48,8 @@ public class RecipeDAO {
         }
     }
 
-    public boolean updateRecipe(int recipeId, String title, int prepTime, int cookTime, String instruction, String imgAddr) {
-        String sql = "UPDATE recipe SET title = ?, prep_time = ?, cook_time = ?, instruction = ?, img_addr = ? WHERE recipe_id = ?";
+    public boolean updateRecipe(int recipeId, String title, int prepTime, int cookTime, String instruction, String imgAddr, int serve) {
+        String sql = "UPDATE recipe SET title = ?, prep_time = ?, cook_time = ?, instruction = ?, img_addr = ?, serve = ? WHERE recipe_id = ?";
         try (Connection conn = DBUtil.getConnection();PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, title);
@@ -56,7 +57,8 @@ public class RecipeDAO {
             stmt.setInt(3, cookTime);
             stmt.setString(4, instruction);
             stmt.setString(5, imgAddr);
-            stmt.setInt(6, recipeId);
+            stmt.setInt(6, serve);
+            stmt.setInt(7, recipeId);
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
@@ -84,6 +86,8 @@ public class RecipeDAO {
                     recipe.setPrepTime(rs.getInt("prep_time"));
                     recipe.setCookTime(rs.getInt("cook_time"));
                     recipe.setInstruction(rs.getString("instruction"));
+                    recipe.setImgAddr(rs.getString("img_Addr"));
+                    recipe.setServe(rs.getInt("serve"));
 
                     System.out.println("Recipe found: " + recipe.getTitle());
                 } else {
@@ -116,7 +120,9 @@ public class RecipeDAO {
                     recipe.setPrepTime(rs.getInt("prep_time"));
                     recipe.setCookTime(rs.getInt("cook_time"));
                     recipe.setInstruction(rs.getString("instruction"));
-
+                    recipe.setImgAddr(rs.getString("img_addr"));
+                    recipe.setServe(rs.getInt("serve"));
+                    
                     recipes.add(recipe);
                     System.out.println("Recipe found: " + recipe.getTitle());
                 }
@@ -126,7 +132,7 @@ public class RecipeDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return recipes; // Return empty list if exception occurs
+            return recipes; 
         }
     }
 
@@ -146,6 +152,8 @@ public class RecipeDAO {
                     recipe.setPrepTime(rs.getInt("prep_time"));
                     recipe.setCookTime(rs.getInt("cook_time"));
                     recipe.setInstruction(rs.getString("instruction"));
+                    recipe.setImgAddr(rs.getString("img_addr"));
+                    recipe.setServe(rs.getInt("serve"));
 
                     recipes.add(recipe);
                     System.out.println("Recipe found: " + recipe.getTitle());
@@ -156,56 +164,71 @@ public class RecipeDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return recipes; // Return empty list if exception occurs
+            return recipes; 
         }
     }
    
-    public boolean existsByTitle(String title) {
-        String sql = "SELECT COUNT(*) FROM recipe WHERE title = ?";
-        try (Connection conn = DBUtil.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
+    // public boolean existsByTitle(String title) {
+    //     String sql = "SELECT COUNT(*) FROM recipe WHERE title = ?";
+    //     try (Connection conn = DBUtil.getConnection();
+    //         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, title);
+    //         stmt.setString(1, title);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-                    System.out.println("Recipe title '" + title + "' count: " + count);
-                    return count > 0;
-                }
-            }
+    //         try (ResultSet rs = stmt.executeQuery()) {
+    //             if (rs.next()) {
+    //                 int count = rs.getInt(1);
+    //                 System.out.println("Recipe title '" + title + "' count: " + count);
+    //                 return count > 0;
+    //             }
+    //         }
 
-            return false;
+    //         return false;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return false;
+    //     }
+    // }
 
     public static void main(String[] args) {
+
         // RecipeDAO recipeDAO = new RecipeDAO();
-        // recipeDAO.createRecipe("New Recipe", 30, 60, "Instructions for new recipe", "img/new_recipe.jpg");
-        // recipeDAO.deleteRecipe(6);
-        // recipeDAO.updateRecipe(2, "Updated Recipe", 25, 55, "Updated instructions", "img/updated_recipe.jpg");
-        // Recipe recipe = recipeDAO.getRecipeById(6);
+
+        // recipeDAO.createRecipe("Test", 30, 60, "Instructions for test recipe", "img/test_recipe.jpg",5);
+
+        // recipeDAO.deleteRecipe(3);
+
+        // recipeDAO.updateRecipe(4, "Updated Recipe", 25, 55, "Updated instructions", "img/updated_recipe.jpg",90);
+
+        // int recipeId =4;
+        // Recipe recipe = recipeDAO.getRecipeById(recipeId);
         // if (recipe != null && recipe.getTitle() != null) {
         //     System.out.println("Found recipe: " + recipe.getTitle());
         //     System.out.println("Prep time: " + recipe.getPrepTime());
         //     System.out.println("Cook time: " + recipe.getCookTime());
         //     System.out.println("Instruction: " + recipe.getInstruction());
+        //     System.out.println("ImgAddr: " + recipe.getImgAddr());
+        //     System.out.println("Serve: " + recipe.getServe());
         // } else {
-        //     System.out.println("No recipe found for ID: " + 1);
+        //     System.out.println("No recipe found for ID: " + recipeId);
         // }
-        // Recipe recipe = recipeDAO.getRecipesByTitle("Test");
-        // if (recipe != null && recipe.getTitle() != null) {
-        //     System.out.println("Found recipe: " + recipe.getTitle());
-        //     System.out.println("Prep time: " + recipe.getPrepTime());
-        //     System.out.println("Cook time: " + recipe.getCookTime());
-        //     System.out.println("Instruction: " + recipe.getInstruction());
+
+        // String keyword = "Test";
+        // List<Recipe> recipes = recipeDAO.getRecipesByTitle(keyword);
+        // if (recipes.isEmpty()) {
+        //     System.out.println("No recipes found.");
         // } else {
-        //     System.out.println("No recipe found for Title: " + "Test");
+        //     for (Recipe recipe : recipes) {
+        //         System.out.println("Found recipe: " + recipe.getTitle());
+        //         System.out.println("Prep time: " + recipe.getPrepTime());
+        //         System.out.println("Cook time: " + recipe.getCookTime());
+        //         System.out.println("Instruction: " + recipe.getInstruction());
+        //         System.out.println("ImgAddr: " + recipe.getImgAddr());
+        //         System.out.println("Serve: " + recipe.getServe());
+        //     }
         // }
+
         // List<Recipe> recipes = recipeDAO.getAllRecipes();
         // if (recipes != null && !recipes.isEmpty()) {
         //     for (Recipe recipe : recipes) {
@@ -214,13 +237,13 @@ public class RecipeDAO {
         //         System.out.println("Prep Time: " + recipe.getPrepTime());
         //         System.out.println("Cook Time: " + recipe.getCookTime());
         //         System.out.println("Instruction: " + recipe.getInstruction());
+        //         System.out.println("ImgAddr: " + recipe.getImgAddr());
+        //         System.out.println("Serve: " + recipe.getServe());
         //         System.out.println("-----------------------------");
         //     }
         // } else {
         //     System.out.println("No recipes found.");
         // }
-        // RecipeDAO dao = new RecipeDAO();
-        // boolean exists = dao.existsByTitle("Test");
-        // System.out.println(exists ? "Title already exists!" : "Title is unique.");
+
     }
 }
