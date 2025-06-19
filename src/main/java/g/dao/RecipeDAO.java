@@ -11,7 +11,7 @@ import g.utils.DBUtil;
 
 public class RecipeDAO {
     
-    public boolean createRecipe(String title, int prepTime, int cookTime, String instruction, String imgAddr, int serve) {
+    public int createRecipe(String title, int prepTime, int cookTime, String instruction, String imgAddr, int serve) {
         String sql = "INSERT INTO recipe (title, prep_time, cook_time, instruction, img_addr, serve) VALUES (?, ?, ?, ?, ?,?)";
         try (Connection conn = DBUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -24,11 +24,22 @@ public class RecipeDAO {
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
-            return rowsAffected > 0;
+            
+            if (rowsAffected > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int recipeId = generatedKeys.getInt(1);
+                        System.out.println("Generated Recipe ID: " + recipeId);
+                        return recipeId;
+                    }
+                }
+            }
+
+            return -1;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
@@ -193,9 +204,9 @@ public class RecipeDAO {
 
     public static void main(String[] args) {
 
-        RecipeDAO recipeDAO = new RecipeDAO();
+        // RecipeDAO recipeDAO = new RecipeDAO();
 
-        recipeDAO.createRecipe("Test12", 30, 60, "Instructions for test recipe", "img/test_recipe.jpg",5);
+        // recipeDAO.createRecipe("tr2", 6, 30, "Instructions for test2 recipe", "img/test_recipe_2.jpg",2);
 
         // recipeDAO.deleteRecipe(3);
 

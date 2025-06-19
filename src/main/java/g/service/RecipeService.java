@@ -1,128 +1,176 @@
 package g.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import g.dao.ImageDAO;
 import g.dao.IngredientDAO;
 import g.dao.RecipeDAO;
 import g.model.Ingredient;
 import g.model.Recipe;
-import g.model.RecipeResponse;
+import g.DTO.RecipeDetailRequest;
+import g.DTO.RecipeDetailResponse;
 
 public class RecipeService {
 
     private RecipeDAO recipeDAO;
     private IngredientDAO ingredientDAO;
-    private ImageDAO imageDAO;
 
-    // Constructor: inject DAOs from outside
-    public RecipeService(RecipeDAO recipeDAO, IngredientDAO ingredientDAO, ImageDAO imageDAO) {
+    public RecipeService(RecipeDAO recipeDAO, IngredientDAO ingredientDAO) {
         this.recipeDAO = recipeDAO;
         this.ingredientDAO = ingredientDAO;
-        this.imageDAO = imageDAO;
     }
 
-    // Create a new recipe
-    public boolean createRecipe(String title, int prepTime, int cookTime, String instruction, String imgAddr) {
-        // Validate input
-        if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Recipe name cannot be empty.");
-        }
+    public boolean createRecipe(RecipeDetailRequest request) {
 
-        // Check for duplicate
-        if (recipeDAO.existsByTitle(title)) {
+        Recipe recipe = request.getRecipe();
+        List<Ingredient> ingredients = request.getIngredients();
+
+        int createRecipeResult = recipeDAO.createRecipe(
+            recipe.getTitle(),
+            recipe.getPrepTime(),
+            recipe.getCookTime(),
+            recipe.getInstruction(),
+            recipe.getImgAddr(),
+            recipe.getServe()
+        );
+ 
+        if (createRecipeResult==-1) {
+            System.out.println("Failed to create recipe");
             return false;
         }
 
-        // Create recipe
-        boolean isCreated = recipeDAO.createRecipe(title, prepTime, cookTime, instruction, imgAddr);
-
-        // If your recipe table already stores the image, no need to call imageDAO here
-        return isCreated;
+        for (Ingredient ingredient : ingredients) {
+            int createIngredientResult = ingredientDAO.addIngredient(
+                createRecipeResult,
+                ingredient.getIngredientName(),
+                ingredient.getIngredientValue()
+            );
+            if (createIngredientResult == -1) {
+                System.out.println("Failed to insert ingredient: " + ingredient);
+                return false;
+            }
+        }
+    
+        return true;
     }
 
-    // Delete a recipe by ID
     public boolean deleteRecipe(int recipeId) {
-        // Step 1: Delete ingredients related to the recipe
-        boolean ingredientsDeleted = ingredientDAO.deleteIngredientsByRecipeId(recipeId);
+
+        boolean deleteIngredients = ingredientDAO.deleteIngredientsByRecipeId(recipeId);
         
-        // Step 2: Delete the recipe itself
-        boolean isDeleted = recipeDAO.deleteRecipe(recipeId);
+        boolean deletedRecipe = recipeDAO.deleteRecipe(recipeId);
 
-        if (!ingredientsDeleted) {
-            return false; // If ingredients deletion fails, return false
-        }else if (!isDeleted) {
-            return false; // If recipe deletion fails, return false
+        if (!deleteIngredients) {
+            return false; 
+        }else if (!deletedRecipe) {
+            return false; 
         }
 
-        return isDeleted;
+        return true; 
     }
 
-    // Update an existing recipe
-    public boolean updateRecipe(int recipeId, String title, int prepTime, int cookTime, String instruction, String imgAddr) {
-        // Step 1: Validate input
-        if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Recipe name cannot be empty.");
+    public boolean updateRecipe(RecipeDetailRequest request) {
+
+        Recipe recipe = request.getRecipe();
+        List<Ingredient> ingredients = request.getIngredients();
+
+        boolean updateRecipeResult = recipeDAO.updateRecipe(
+            recipe.getRecipeId(),
+            recipe.getTitle(),
+            recipe.getPrepTime(),
+            recipe.getCookTime(),
+            recipe.getInstruction(),
+            recipe.getImgAddr(),
+            recipe.getServe()
+        );
+ 
+        if (!updateRecipeResult) {
+            System.out.println("Failed to create recipe");
+            return false;
         }
 
-        // Step 2: Call DAO to update the recipe
-        boolean isUpdated = recipeDAO.updateRecipe(recipeId, title, prepTime, cookTime, instruction, imgAddr);
-
-        // Step 3: Return whether update succeeded
-        return isUpdated;
+        for (Ingredient ingredient : ingredients) {
+            boolean updateIngredientResult = ingredientDAO.updateIngredient(
+                ingredient.getPairId(),
+                recipe.getRecipeId(),
+                ingredient.getIngredientName(),
+                ingredient.getIngredientValue()
+            );
+            if (!updateIngredientResult) {
+                System.out.println("Failed to insert ingredient: " + ingredient);
+                return false;
+            }
+        }
+    
+        return true;
     }
 
-    // Get a recipe by ID
-    public RecipeResponse getRecipeById(int recipeId) {
-        // Step 1: Get the recipe
+
+    public RecipeDetailResponse getRecipeById(int recipeId) {
+   
         Recipe recipe = recipeDAO.getRecipeById(recipeId);
 
-        // Step 2: Get related ingredients
         List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipeId);
 
-        // Step 3: Get image path (if stored separately)
-        String imagePath = imageDAO.getImageByRecipeId(recipeId);
+        RecipeDetailResponse response = new RecipeDetailResponse(recipe, ingredients);
 
-        // Step 4: Combine into response
-        return new RecipeResponse(recipe, ingredients, imagePath);
+        return response;
     }
 
-    // Get recipes by title
-    public List<RecipeResponse> getRecipesByTitle(String title) {
-        List<Recipe> recipes = recipeDAO.getRecipesByTitle(title);
-        List<RecipeResponse> responses = new ArrayList<>();
-        for (Recipe recipe : recipes) {
-            int recipeId = recipe.getRecipeId();
-            List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipeId);
-            String imagePath = imageDAO.getImageByRecipeId(recipeId);
-            responses.add(new RecipeResponse(recipe, ingredients, imagePath));
+    public List<RecipeDetailResponse> getRecipesByTitle(String keyword) {
+
+        List<RecipeDetailResponse> responses = new ArrayList<>();
+
+        try {
+            
+            List<Recipe> recipes = recipeDAO.getRecipesByTitle(keyword);
+
+            for (Recipe recipe : recipes) {
+                List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipe.getRecipeId());
+                RecipeDetailResponse response = new RecipeDetailResponse(recipe, ingredients);
+                responses.add(response);
+            }
+
+            return responses;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-        return responses;
+
     }
 
-    // Get all recipes
-    public List<RecipeResponse> getAllRecipes() {
-        List<Recipe> recipes = recipeDAO.getAllRecipes();
-        List<RecipeResponse> responses = new ArrayList<>();
-        for (Recipe recipe : recipes) {
-            int recipeId = recipe.getRecipeId();
-            List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipeId);
-            String imagePath = imageDAO.getImageByRecipeId(recipeId);
-            responses.add(new RecipeResponse(recipe, ingredients, imagePath));
+    public List<RecipeDetailResponse> getAllRecipes() {
+
+        List<RecipeDetailResponse> responses = new ArrayList<>();
+
+        try {
+            
+            List<Recipe> recipes = recipeDAO.getAllRecipes();
+
+            for (Recipe recipe : recipes) {
+                List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipe.getRecipeId());
+                RecipeDetailResponse response = new RecipeDetailResponse(recipe, ingredients);
+                responses.add(response);
+            }
+
+            return responses;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
-        return responses;
-    }
 
+    }
 
 
     public static void main(String[] args) { 
 
         // RecipeDAO recipeDAO = new RecipeDAO();
         // IngredientDAO ingredientDAO = new IngredientDAO();
-        // ImageDAO imageDAO = new ImageDAO();
+        // RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO);
 
-        // RecipeService recipeService = new RecipeService(recipeDAO, ingredientDAO, imageDAO);
 
         // // create
         // boolean isCreated = recipeService.createRecipe(
@@ -142,14 +190,19 @@ public class RecipeService {
         // boolean isUpdated = recipeService.updateRecipe(10,"Updated Pasta", 15,25,"Boil pasta, add new sauce.","updated_pasta.jpg");
         // System.out.println("Update result: " + isUpdated);
 
-        // // getById
-        // RecipeResponse result = recipeService.getRecipeById(10);
-        // System.out.println("\n=== Get By ID ===");
-        // System.out.println("ID: " + result.getRecipe().getRecipeId());
-        // System.out.println("Title: " + result.getRecipe().getTitle());
-        // System.out.println("Instruction: " + result.getRecipe().getInstruction());
-        // System.out.println("Image Path: " + result.getImagePath());
-        // System.out.println("Ingredients: " + result.getIngredients());
+        // getById
+        // int testRecipeId = 1;
+        // RecipeDetailResponse response = recipeService.getRecipeById(testRecipeId);
+
+        // if (response != null) {
+        //     System.out.println("Recipe: " + response.getRecipe());
+        //     System.out.println("Ingredients: ");
+        //     for (Ingredient ingredient : response.getIngredients()) {
+        //         System.out.println(ingredient);
+        //     }
+        // } else {
+        //     System.out.println("No recipe found with ID: " + testRecipeId);
+        // }
 
         // // getAll
         // System.out.println("\n=== All Recipes ===");

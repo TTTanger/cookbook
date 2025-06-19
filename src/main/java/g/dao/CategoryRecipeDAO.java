@@ -90,9 +90,7 @@ public class CategoryRecipeDAO {
 
         // List<Integer> categoryIds = new ArrayList<>();
         // categoryIds.add(1);
-        // categoryIds.add(13);
-        // categoryIds.add(14);
-        // int recipeId = 2;
+        // int recipeId = 1;
 
         // boolean result = dao.addToCategory(categoryIds, recipeId);
         // System.out.println("Add Result: " + result);
