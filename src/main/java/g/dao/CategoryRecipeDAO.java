@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import g.utils.DBUtil;
@@ -83,6 +84,31 @@ public class CategoryRecipeDAO {
             return null;
         }
     }
+
+    public List<Integer> getCategoryIdsByRecipeId(int recipeId) {
+        String sql = "SELECT category_id FROM category_recipe WHERE recipe_id = ?";
+        List<Integer> categoryIds = new ArrayList<>();
+
+        try (Connection conn = DBUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, recipeId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int categoryId = rs.getInt("category_id");
+                    categoryIds.add(categoryId);
+                }
+            }
+
+            return categoryIds;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
 
     public static void main(String[] args) {
 
