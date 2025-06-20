@@ -5,16 +5,16 @@ public class Ingredient {
     private int pairId;
     private int recipeId;
     private String ingredientName;
-    private int ingredientValue;
+    private String ingredientAmount;
 
     public Ingredient() {
     }
 
-    public Ingredient(int pairId,int recipeId, String ingredientName,int ingredientValue) {
+    public Ingredient(int pairId,int recipeId, String ingredientName,String ingredientAmount) {
         this.pairId = pairId;
         this.recipeId = recipeId;
         this.ingredientName = ingredientName;
-        this.ingredientValue = ingredientValue;
+        this.ingredientAmount = ingredientAmount;
 
     }
 
@@ -38,12 +38,12 @@ public class Ingredient {
         this.ingredientName = ingredientName;
     }    
     
-    public int getIngredientValue() {
-        return ingredientValue;
+    public String getIngredientAmount() {
+        return ingredientAmount;
     }
 
-    public void setIngredientValue(int ingredientValue) {
-        this.ingredientValue = ingredientValue;
+    public void setIngredientAmount(String ingredientAmount) {
+        this.ingredientAmount = ingredientAmount;
     }
 
     @Override 
@@ -51,7 +51,7 @@ public class Ingredient {
         return "Ingredient{" +
                 "pairId" + pairId + 
                 ", ingredientName='" + ingredientName + '\'' +
-                ", ingredientValue=" + ingredientValue + 
+                ", ingredientAmount=" + ingredientAmount + 
                 '}';
     }
 }

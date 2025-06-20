@@ -11,14 +11,14 @@ import g.utils.DBUtil;
 
 public class IngredientDAO {
 
-    public int addIngredient(int recipeId, String ingredientName, int ingredientValue) {
-        String sql = "INSERT INTO ingredient (recipe_id, ingredient_name, ingredient_value) VALUES (?, ?, ?)";
+    public boolean addIngredient(int recipeId, String ingredientName, String ingredientAmount) {
+        String sql = "INSERT INTO ingredient (recipe_id, ingredient_name, ingredient_amount) VALUES (?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, recipeId);
             stmt.setString(2, ingredientName);
-            stmt.setInt(3, ingredientValue);
+            stmt.setString(3, ingredientAmount);
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
@@ -28,16 +28,16 @@ public class IngredientDAO {
                     if (generatedKeys.next()) {
                         int pairId = generatedKeys.getInt(1);
                         System.out.println("Generated Recipe ID: " + pairId);
-                        return pairId;
+                        return rowsAffected > 0;
                     }
                 }
             }
 
-            return -1;
+            return false;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return false;
         }
     }
     
@@ -76,13 +76,13 @@ public class IngredientDAO {
         }
     }
 
-    public boolean updateIngredient(int pairId, int recipeId, String ingredientName, int value) {
-        String sql = "UPDATE ingredient SET ingredient_name = ?, ingredient_value = ? WHERE pair_id = ? AND recipe_id = ?";
+    public boolean updateIngredient(int pairId, int recipeId, String ingredientName, String ingredientAmount) {
+        String sql = "UPDATE ingredient SET ingredient_name = ?, ingredient_amount = ? WHERE pair_id = ? AND recipe_id = ?";
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, ingredientName);
-            stmt.setInt(2, value);
+            stmt.setString(2, ingredientAmount);
             stmt.setInt(3, pairId);
             stmt.setInt(4, recipeId);
 
@@ -110,7 +110,7 @@ public class IngredientDAO {
                 while (rs.next()) {
                     Ingredient ingredient = new Ingredient();
                     ingredient.setIngredientName(rs.getString("ingredient_name"));
-                    ingredient.setIngredientValue(rs.getInt("ingredient_value"));
+                    ingredient.setIngredientAmount(rs.getString("ingredient_amount"));
 
                     ingredients.add(ingredient);
                     System.out.println("Ingredient found: " + ingredient.getIngredientName());

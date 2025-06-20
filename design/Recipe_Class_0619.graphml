@@ -79,20 +79,20 @@
           <data key="d4" xml:space="preserve"/>
           <data key="d6">
             <y:UMLClassNode>
-              <y:Geometry height="178.06664660534307" width="326.0219509740822" x="-61.986113237323366" y="1313.166220309451"/>
+              <y:Geometry height="214.8426698838366" width="388.6728081395926" x="-36.07353444644127" y="1313.1662203094513"/>
               <y:Fill color="#FF6600" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="106.60986328125" x="109.7060438464161" xml:space="preserve" y="3.0">CategoryService<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="106.60986328125" x="141.0314724291713" xml:space="preserve" y="3.0">CategoryService<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:UML clipContent="true" constraint="" hasDetailsColor="false" omitDetails="false" stereotype="" use3DEffect="true">
                 <y:AttributeLabel xml:space="preserve">-categoryDAO: CategoryDAO
 -recipeDAO: RecipeDAO</y:AttributeLabel>
-                <y:MethodLabel xml:space="preserve">+addToCategory(int, int): boolean
-+removeFromCategory(int, int): boolean
-+updateCategoriesForRecipe(List&lt;categoryId&gt;, int): boolean
+                <y:MethodLabel xml:space="preserve">+addServiceToCategory(List&lt;categoryId&gt;, int): boolean
++updateServiceToCategoriesForRecipe(List&lt;categoryId&gt;, int): boolean
 +createCategory(String): boolean
 +deleteCategory(String): boolean
-+getRecipesByCategoryId(int): List&lt;Recipes&gt;
-+getAllCategories(): List&lt;Category&gt;
++updateCategory(String): boolean
++getAllCategories(): List&lt;Response&gt;
++getRecipeSummaryByCategoryId(int): List&lt;Recipes&gt;
 </y:MethodLabel>
               </y:UML>
             </y:UMLClassNode>
@@ -113,9 +113,10 @@
 +deleteRecipe(int):boolean
 +updateRecipe(RecipeDetailRequest): boolean
 +getRecipeById(int):Response
-+getRecipesByTitle(string):List&lt;Response&gt;
-+getAllRecipes():List&lt;Response&gt;
-//+getRecipeSummary(List&lt;int&gt;):List&lt;Response&gt;</y:MethodLabel>
++getRecipeSummaryById(int):List&lt;Response&gt;
++getRecipeSummaryByTitle(string):List&lt;Response&gt;
++getAllRecipeSummary():List&lt;Response&gt;
+</y:MethodLabel>
               </y:UML>
             </y:UMLClassNode>
           </data>
@@ -224,7 +225,8 @@
                 <y:MethodLabel xml:space="preserve">+addToCategory(List&lt;categoryId&gt;, int): boolean
 +clearCategoriesForRecipe(int): boolean
 +removeWholeCategory(int):boolean
-+getRecipeIdsByCategory(int): List&lt;recipeId&gt;</y:MethodLabel>
++getRecipeIdsByCategory(int): List&lt;categoryId&gt;
++getCategoryIdsByRecipeId:(int): List&lt;recipeId&gt;</y:MethodLabel>
               </y:UML>
             </y:UMLClassNode>
           </data>
@@ -859,7 +861,7 @@
       <data key="d8" xml:space="preserve"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="19.587248082462622" ty="0.0">
+          <y:Path sx="0.0" sy="0.0" tx="23.35128261514763" ty="0.0">
             <y:Point x="120.61211033218035" y="1037.0928978810737"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
@@ -900,7 +902,7 @@
       <data key="d8" xml:space="preserve"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="-101.83171139092843" sy="3.0317651538784958" tx="80.77120016062324" ty="-3.072146566647916"/>
+          <y:Path sx="-121.40046737871067" sy="3.6579142278321095" tx="80.77120016062324" ty="-3.072146566647916"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="none"/>
           <y:BendStyle smoothed="false"/>

@@ -6,6 +6,8 @@ import java.util.List;
 
 import g.DTO.RecipeDetailRequest;
 import g.DTO.RecipeDetailResponse;
+import g.DTO.RecipeSummaryResponse;
+
 import g.dao.IngredientDAO;
 import g.dao.RecipeDAO;
 import g.model.Ingredient;
@@ -47,12 +49,12 @@ public class RecipeService {
         }
 
         for (Ingredient ingredient : ingredients) {
-            int createIngredientResult = ingredientDAO.addIngredient(
+            boolean createIngredientResult = ingredientDAO.addIngredient(
                 createRecipeResult,
                 ingredient.getIngredientName(),
-                ingredient.getIngredientValue()
+                ingredient.getIngredientAmount()
             );
-            if (createIngredientResult == -1) {
+            if (!createIngredientResult) {
                 System.out.println("Failed to insert ingredient: " + ingredient);
                 return false;
             }
@@ -101,7 +103,7 @@ public class RecipeService {
                 ingredient.getPairId(),
                 recipe.getRecipeId(),
                 ingredient.getIngredientName(),
-                ingredient.getIngredientValue()
+                ingredient.getIngredientAmount()
             );
             if (!updateIngredientResult) {
                 System.out.println("Failed to insert ingredient: " + ingredient);
@@ -124,17 +126,22 @@ public class RecipeService {
         return response;
     }
 
-    public List<RecipeDetailResponse> getRecipesByTitle(String keyword) {
+    public List<RecipeSummaryResponse> getRecipeSummaryByTitle(String keyword) {
 
-        List<RecipeDetailResponse> responses = new ArrayList<>();
+        List<RecipeSummaryResponse> responses = new ArrayList<>();
 
         try {
             
-            List<Recipe> recipes = recipeDAO.getRecipesByTitle(keyword);
+            List<Recipe> recipes = recipeDAO.getRecipeSummaryByTitle(keyword);
 
             for (Recipe recipe : recipes) {
-                List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipe.getRecipeId());
-                RecipeDetailResponse response = new RecipeDetailResponse(recipe, ingredients);
+
+                RecipeSummaryResponse response = new RecipeSummaryResponse(
+                    recipe.getRecipeId(),
+                    recipe.getTitle(),
+                    recipe.getImgAddr()
+                );
+
                 responses.add(response);
             }
 
@@ -147,17 +154,21 @@ public class RecipeService {
 
     }
 
-    public List<RecipeDetailResponse> getAllRecipes() {
+    public List<RecipeSummaryResponse> getAllRecipeSummary() {
 
-        List<RecipeDetailResponse> responses = new ArrayList<>();
+        List<RecipeSummaryResponse> responses = new ArrayList<>();
 
         try {
             
-            List<Recipe> recipes = recipeDAO.getAllRecipes();
+            List<Recipe> recipes = recipeDAO.getAllRecipeSummary();
 
             for (Recipe recipe : recipes) {
-                List<Ingredient> ingredients = ingredientDAO.getIngredientsByRecipeId(recipe.getRecipeId());
-                RecipeDetailResponse response = new RecipeDetailResponse(recipe, ingredients);
+                RecipeSummaryResponse response = new RecipeSummaryResponse(
+                    recipe.getRecipeId(),
+                    recipe.getTitle(),
+                    recipe.getImgAddr()
+                );
+
                 responses.add(response);
             }
 
@@ -169,6 +180,8 @@ public class RecipeService {
         }
 
     }
+
+    
 
 
     public static void main(String[] args) { 

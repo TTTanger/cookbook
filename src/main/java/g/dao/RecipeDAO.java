@@ -114,8 +114,35 @@ public class RecipeDAO {
         }
     }
 
-    public List<Recipe> getRecipesByTitle(String keyword) {
-        String sql = "SELECT * FROM recipe WHERE title LIKE ?";
+    public Recipe getRecipeSummaryById(int recipeId) {
+        String sql = "SELECT recipe_id, title, img_addr FROM recipe WHERE recipe_id LIKE ?";
+
+        try (Connection conn = DBUtil.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, recipeId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Recipe recipe = new Recipe();
+                    recipe.setRecipeId(rs.getInt("recipe_id"));
+                    recipe.setTitle(rs.getString("title"));
+                    recipe.setImgAddr(rs.getString("img_addr"));
+                    return recipe;
+                } else {
+                    System.out.println("No recipe found for ID: " + recipeId);
+                    return null;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; 
+        }
+    }
+
+    public List<Recipe> getRecipeSummaryByTitle(String keyword) {
+        String sql = "SELECT recipe_id, title, img_addr FROM recipe WHERE title LIKE ?";
         List<Recipe> recipes = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
@@ -128,11 +155,7 @@ public class RecipeDAO {
                     Recipe recipe = new Recipe();
                     recipe.setRecipeId(rs.getInt("recipe_id"));
                     recipe.setTitle(rs.getString("title"));
-                    recipe.setPrepTime(rs.getInt("prep_time"));
-                    recipe.setCookTime(rs.getInt("cook_time"));
-                    recipe.setInstruction(rs.getString("instruction"));
                     recipe.setImgAddr(rs.getString("img_addr"));
-                    recipe.setServe(rs.getInt("serve"));
                     
                     recipes.add(recipe);
                     System.out.println("Recipe found: " + recipe.getTitle());
@@ -148,8 +171,8 @@ public class RecipeDAO {
     }
 
 
-    public List<Recipe> getAllRecipes() {
-        String sql = "SELECT * FROM recipe";
+    public List<Recipe> getAllRecipeSummary() {
+        String sql = "SELECT recipe_id, title, img_addr FROM recipe";
         List<Recipe> recipes = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection();
@@ -160,11 +183,7 @@ public class RecipeDAO {
                     Recipe recipe = new Recipe();
                     recipe.setRecipeId(rs.getInt("recipe_id"));
                     recipe.setTitle(rs.getString("title"));
-                    recipe.setPrepTime(rs.getInt("prep_time"));
-                    recipe.setCookTime(rs.getInt("cook_time"));
-                    recipe.setInstruction(rs.getString("instruction"));
                     recipe.setImgAddr(rs.getString("img_addr"));
-                    recipe.setServe(rs.getInt("serve"));
 
                     recipes.add(recipe);
                     System.out.println("Recipe found: " + recipe.getTitle());

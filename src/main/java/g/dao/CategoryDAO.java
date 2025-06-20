@@ -10,6 +10,7 @@ import g.model.Category;
 import g.utils.DBUtil;
 
 public class CategoryDAO {
+    
     public boolean createCategory(String categoryName) {
         String sql = "INSERT INTO category (category_name) VALUES (?)";
 
@@ -52,6 +53,40 @@ public class CategoryDAO {
             return rowsAffected > 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public List<Category> getCategoriesByIds(List<Integer> categoryIds) {
+
+        List<Category> categories = new ArrayList<>();
+
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return categories;
+        }
+
+        try {
+            for (int categoryId : categoryIds) {
+                String sql = "SELECT category_id, category_name FROM category WHERE category_id = ?";
+
+                try (Connection conn = DBUtil.getConnection();PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                    stmt.setInt(1, categoryId);
+
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            categories.add(new Category(
+                                rs.getInt("category_id"),
+                                rs.getString("category_name")
+                            ));
+                        }
+                    }
+                }
+            }
+            return categories;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return categories;
         }
     }
 
