@@ -23,4 +23,12 @@ public class RecipeSummaryResponse {
         return imgAddr;
     }
 
+    @Override
+    public String toString() {
+        return "RecipeSummaryResponse{" +
+                "recipeId=" + recipeId +
+                ", title='" + title + '\'' +
+                ", imgAddr='" + imgAddr + '\'' +
+                '}';
+    }
 }

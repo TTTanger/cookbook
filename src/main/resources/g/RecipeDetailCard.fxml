@@ -28,7 +28,6 @@
       
       <Label text="Categories:" />
       <Label fx:id="categories" text="Categories" />
-      
-      <Button text="Load Data" onAction="#renderRecipeData" />
+   
    </children>
 </VBox>

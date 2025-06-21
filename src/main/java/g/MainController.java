@@ -8,6 +8,6 @@ public class MainController {
 
     @FXML
     public void goToMain() throws IOException {
-        App.setRoot("main");
+        App.setRoot("Main");
     }
 }
