@@ -52,7 +52,8 @@ public class RecipeService {
             boolean createIngredientResult = ingredientDAO.addIngredient(
                 createRecipeResult,
                 ingredient.getIngredientName(),
-                ingredient.getIngredientAmount()
+                ingredient.getIngredientAmount(),
+                ingredient.getIngredientUnit()
             );
             if (!createIngredientResult) {
                 System.out.println("Failed to insert ingredient: " + ingredient);
@@ -103,7 +104,8 @@ public class RecipeService {
                 ingredient.getPairId(),
                 recipe.getRecipeId(),
                 ingredient.getIngredientName(),
-                ingredient.getIngredientAmount()
+                ingredient.getIngredientAmount(),
+                ingredient.getIngredientUnit()
             );
             if (!updateIngredientResult) {
                 System.out.println("Failed to insert ingredient: " + ingredient);
