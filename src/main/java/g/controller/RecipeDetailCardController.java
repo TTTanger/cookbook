@@ -9,8 +9,10 @@ import g.DTO.RecipeSummaryResponse;
 import g.model.Ingredient;
 import g.model.Recipe;
 import g.service.RecipeService;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class RecipeDetailCardController implements Initializable {
@@ -22,18 +24,31 @@ public class RecipeDetailCardController implements Initializable {
         this.recipeService = new RecipeService();
     }
 
+    @FXML
+    private Button recipeUpdateButton;
+    @FXML
+    private Button recipeDeleteButton;
+    @FXML
+    private Button recipeCategorizeButton;
+    @FXML
+    private Label recipeId;
+    @FXML
+    private Label title;
+    @FXML
+    private Label prepTime;
+    @FXML
+    private Label cookTime;
+    @FXML
+    private Label ingredients;
+    @FXML
+    private Label instructions;
+    @FXML
+    private Label imgAddr;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("RecipeDetailCardController initialized");
     }
-
-    @FXML private Label recipeId;
-    @FXML private Label title;
-    @FXML private Label prepTime;
-    @FXML private Label cookTime;
-    @FXML private Label ingredients;
-    @FXML private Label instructions;
-    @FXML private Label imgAddr;
 
     @FXML
     public void loadRecipeData(int recipeId, String title, int prepTime, int cookTime,
@@ -55,14 +70,37 @@ public class RecipeDetailCardController implements Initializable {
         Recipe recipe = recipeDetail.getRecipe();
         List<Ingredient> ingredients = recipeDetail.getIngredients();
         loadRecipeData(
-            recipe.getRecipeId(),
-            recipe.getTitle(),
-            recipe.getPrepTime(),
-            recipe.getCookTime(),
-            ingredients,
-            recipe.getInstruction(),
-            recipe.getImgAddr()
+                recipe.getRecipeId(),
+                recipe.getTitle(),
+                recipe.getPrepTime(),
+                recipe.getCookTime(),
+                ingredients,
+                recipe.getInstruction(),
+                recipe.getImgAddr()
         );
-
     }
+
+    @FXML
+    public void onRecipeDeleteClicked(ActionEvent event) {
+        System.out.println("Recipe delete button clicked for recipe ID: " + recipeId.getText());
+        int id = Integer.parseInt(recipeId.getText());
+        recipeService.deleteRecipe(id);
+        System.out.println("Recipe with ID " + id + " deleted successfully.");
+    }
+
+    @FXML
+    public void onRecipeUpdateClicked(ActionEvent event) {
+        System.out.println("Recipe update button clicked for recipe ID: " + recipeId.getText());
+    }
+
+    @FXML
+    public void onRecipeCategorizeClicked(ActionEvent event) {
+        System.out.println("Recipe categorize button clicked for recipe ID: " + recipeId.getText());
+    }
+
+    @FXML
+    public void onBackClicked(ActionEvent event) {
+        System.out.println("Back button clicked");
+    }
+
 }

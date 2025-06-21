@@ -16,7 +16,7 @@ import javafx.scene.control.ListView;
 public class ListViewController implements Initializable {
 
     private Consumer<RecipeSummaryResponse> onItemSelected;
-    private RecipeService recipeService;
+    private final RecipeService recipeService;
     @FXML
     private ListView<RecipeSummaryResponse> listView;
 
@@ -42,15 +42,35 @@ public class ListViewController implements Initializable {
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
         listView.setItems(observableList);
 
+        listView.setCellFactory(lv -> new javafx.scene.control.ListCell<RecipeSummaryResponse>() {
+            @Override
+            protected void updateItem(RecipeSummaryResponse item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getTitle());  // 显示你想要的字段
+                }
+            }
+        });
+
         listView.setOnMouseClicked(event -> {
-        RecipeSummaryResponse selected = listView.getSelectionModel().getSelectedItem();
-        System.out.println("点击事件触发，选中项: " + (selected != null ? selected.getTitle() : "null"));
-        System.out.println("回调函数: " + (onItemSelected != null ? "已设置" : "null"));
-        
-        if (selected != null && onItemSelected != null) {
-            System.out.println("选中：" + selected.getTitle());
-            onItemSelected.accept(selected); 
-        }
-    });
+            RecipeSummaryResponse selected = listView.getSelectionModel().getSelectedItem();
+            System.out.println("点击事件触发，选中项: " + (selected != null ? selected.getTitle() : "null"));
+            System.out.println("回调函数: " + (onItemSelected != null ? "已设置" : "null"));
+
+            if (selected != null && onItemSelected != null) {
+                System.out.println("选中：" + selected.getTitle());
+                onItemSelected.accept(selected);
+            }
+        });
     }
+
+    public void refreshList() {
+        List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
+        ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
+        listView.setItems(observableList);
+        System.out.println("ListView 已刷新！");
+    }
+
 }

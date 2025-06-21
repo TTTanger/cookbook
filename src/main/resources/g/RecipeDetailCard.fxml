@@ -2,32 +2,87 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="g.controller.RecipeDetailCardController">
-   <children>
-      <Label text="Recipe ID:" />
-      <Label fx:id="recipeId" text="0" />
-      
-      <Label text="Title:" />
-      <Label fx:id="title" text="Recipe Title" />
-      
-      <Label text="Prep Time:" />
-      <Label fx:id="prepTime" text="0" />
-      
-      <Label text="Cook Time:" />
-      <Label fx:id="cookTime" text="0" />
-      
-      <Label text="Ingredients:" />
-      <Label fx:id="ingredients" text="Ingredients List" />
-      
-      <Label text="Instructions:" />
-      <Label fx:id="instructions" text="Instructions" />
-      
-      <Label text="Image Address:" />
-      <Label fx:id="imgAddr" text="Image URL" />
-      
-      <Label text="Categories:" />
-      <Label fx:id="categories" text="Categories" />
-   
-   </children>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" 
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="g.controller.RecipeDetailCardController"
+      prefHeight="600.0" prefWidth="450.0" spacing="10.0" style="-fx-padding: 10;">
+    
+    <children>
+        <AnchorPane prefHeight="60.0" prefWidth="450.0">
+            <children>
+                <Button fx:id="recipeBackButton" layoutX="14.0" layoutY="2.0" mnemonicParsing="false"
+                        onAction="#onBackClicked" text="&lt;" />
+                <Button fx:id="recipeCategorizeButton" layoutX="304.0" layoutY="2.0" mnemonicParsing="false"
+                        onAction="#onRecipeCategorizeClicked" text="❤" />
+                <Button fx:id="recipeUpdateButton" layoutX="341.0" layoutY="2.0" mnemonicParsing="false"
+                        onAction="#onRecipeUpdateClicked" text="✂" />
+                <Button fx:id="recipeDeleteButton" layoutX="379.0" layoutY="2.0" mnemonicParsing="false"
+                        onAction="#onRecipeDeleteClicked" text="🚮" />
+            </children>
+        </AnchorPane>
+
+        <AnchorPane fx:id="recipeDetailsContainer" prefHeight="500.0" prefWidth="450.0">
+            <children>
+                <VBox spacing="8.0" layoutX="10.0" layoutY="10.0">
+                    <children>
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Recipe ID:"/>
+                                <Label fx:id="recipeId" text="0"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Title:"/>
+                                <Label fx:id="title" text="Recipe Title"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Prep Time:"/>
+                                <Label fx:id="prepTime" text="0"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Cook Time:"/>
+                                <Label fx:id="cookTime" text="0"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Ingredients:"/>
+                                <Label fx:id="ingredients" text="Ingredients List"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Instructions:"/>
+                                <Label fx:id="instructions" text="Instructions"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Image Address:"/>
+                                <Label fx:id="imgAddr" text="Image URL"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Label text="Categories:"/>
+                                <Label fx:id="categories" text="Categories"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
 </VBox>

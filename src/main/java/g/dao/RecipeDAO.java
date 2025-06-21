@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Statement;
 
 import g.model.Recipe;
 import g.utils.DBUtil;
@@ -13,7 +14,9 @@ public class RecipeDAO {
     
     public int createRecipe(String title, int prepTime, int cookTime, String instruction, String imgAddr, int serve) {
         String sql = "INSERT INTO recipe (title, prep_time, cook_time, instruction, img_addr, serve) VALUES (?, ?, ?, ?, ?,?)";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        
+        try (Connection conn = DBUtil.getConnection(); 
+            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, title);
             stmt.setInt(2, prepTime);

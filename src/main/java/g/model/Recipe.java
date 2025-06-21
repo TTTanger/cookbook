@@ -21,7 +21,7 @@ public class Recipe {
         this.imgAddr = imgAddr;
         this.serve = serve;
     }
-
+    
     public int getRecipeId() {
         return this.recipeId;
     }
