@@ -17,7 +17,7 @@ public class DBUtil {
     /**
      * The JDBC URL for the MySQL database connection
      */
-    private static final String URL = "jdbc:mysql://localhost:3306/cookbook?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static final String URL = "jdbc:mysql://localhost:3306/cookbook?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
 
     /**
      * The username for database authentication
