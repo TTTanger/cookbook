@@ -14,6 +14,7 @@ public class IngredientDAO {
 
     public boolean addIngredient(int recipeId, String ingredientName, int ingredientAmount, String ingredientUnit) {
         String sql = "INSERT INTO ingredient (recipe_id, ingredient_name, ingredient_amount, unit) VALUES (?, ?, ?, ?)";
+
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -21,6 +22,7 @@ public class IngredientDAO {
             stmt.setString(2, ingredientName);
             stmt.setInt(3, ingredientAmount);
             stmt.setString(4, ingredientUnit);
+
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
@@ -80,6 +82,7 @@ public class IngredientDAO {
 
     public boolean updateIngredient(int pairId, int recipeId, String ingredientName, int ingredientAmount, String ingredientUnit) {
         String sql = "UPDATE ingredient SET ingredient_name = ?, ingredient_amount = ?, unit = ? WHERE pair_id = ? AND recipe_id = ?";
+
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
@@ -127,30 +130,5 @@ public class IngredientDAO {
             e.printStackTrace();
             return ingredients; 
         }
-    }
-
-
-    public static void main(String[] args) {
-
-        // IngredientDAO dao = new IngredientDAO();
-
-        // boolean addResult = dao.addIngredient(4, "Letter", 4);
-        // boolean addResult1 = dao.addIngredient(4, "Carrot", 2);
-
-        // System.out.println("Add ingredient result: " + addResult);
-
-        // boolean deleteOneResult = dao.deleteIngredient(2, 1);
-        // System.out.println("Delete single ingredient result: " + deleteOneResult);
-
-        // List<Ingredient> ingredients = dao.getIngredientsByRecipeId(1);
-        // for (Ingredient ingredient : ingredients) {
-        //     System.out.println(" - " + ingredient.getIngredientName() + ": " + ingredient.getIngredientValue());
-        // }
-
-        // boolean updateResult = dao.updateIngredientValue(1,1, "Potato", 5);
-        // System.out.println("Update ingredient value result: " + updateResult);
-
-        // boolean deleteAllResult = dao.deleteIngredientsByRecipeId(1);
-        // System.out.println("Delete all ingredients result: " + deleteAllResult);
     }
 }
