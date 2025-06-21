@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 9.3.0, for macos15.4 (arm64)
+-- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: cookbook
+-- Host: localhost    Database: cookbook
 -- ------------------------------------------------------
--- Server version	9.3.0
+-- Server version	8.0.42
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -77,7 +77,8 @@ CREATE TABLE `ingredient` (
   `pair_id` int NOT NULL AUTO_INCREMENT,
   `recipe_id` int NOT NULL,
   `ingredient_name` varchar(100) NOT NULL,
-  `ingredient_value` int NOT NULL,
+  `ingredient_amout` int NOT NULL,
+  `unit` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`pair_id`),
   KEY `ingredient_recipe_FK` (`recipe_id`),
   CONSTRAINT `ingredient_recipe_FK` FOREIGN KEY (`recipe_id`) REFERENCES `recipe` (`recipe_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -136,4 +137,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-19 16:05:52
+-- Dump completed on 2025-06-21 12:08:49

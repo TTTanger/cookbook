@@ -44,22 +44,6 @@
                 <configuration>
                     <mainClass>g.App</mainClass>
                 </configuration>
-                <executions>
-                <!-- 主应用启动 -->
-                <execution>
-                    <id>main-app</id>
-                    <configuration>
-                        <mainClass>g.App</mainClass>
-                    </configuration>
-                </execution>
-                <!-- 组件测试启动 -->
-                <execution>
-                    <id>component-test</id>
-                    <configuration>
-                        <mainClass>g.ComponentTester</mainClass>
-                    </configuration>
-                </execution>
-            </executions>
             </plugin>
         </plugins>
     </build>

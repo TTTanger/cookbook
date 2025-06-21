@@ -1,10 +1,11 @@
 package g.controller;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import g.DTO.RecipeDetailResponse;
+import g.DTO.RecipeSummaryResponse;
 import g.model.Ingredient;
 import g.model.Recipe;
 import g.service.RecipeService;
@@ -14,7 +15,7 @@ import javafx.scene.control.Label;
 
 public class RecipeDetailCardController implements Initializable {
 
-    private RecipeService recipeService;
+    private final RecipeService recipeService;
 
     public RecipeDetailCardController() {
         // JavaFX requires a no-arg constructor
@@ -35,22 +36,8 @@ public class RecipeDetailCardController implements Initializable {
     @FXML private Label imgAddr;
 
     @FXML
-    public void renderRecipeData(){
-        RecipeDetailResponse recipeDetail = fetchRecipeData(1);
-        Recipe recipe = recipeDetail.getRecipe();
-        ArrayList<Ingredient> ingredientsList = new ArrayList<>(recipeDetail.getIngredients());
-        
-        if (recipe != null) {
-            loadRecipeData(recipe.getRecipeId(), recipe.getTitle(), recipe.getPrepTime(),
-                    recipe.getCookTime(), ingredientsList, recipe.getInstruction(),
-                    recipe.getImgAddr());
-        } else {
-            System.out.println("Recipe not found");
-        }
-    }
-    
     public void loadRecipeData(int recipeId, String title, int prepTime, int cookTime,
-            ArrayList<Ingredient> ingredients, String instructions,
+            List<Ingredient> ingredients, String instructions,
             String imgAddr) {
         this.recipeId.setText(String.valueOf(recipeId));
         this.title.setText(title);
@@ -61,9 +48,21 @@ public class RecipeDetailCardController implements Initializable {
         this.imgAddr.setText(imgAddr);
     }
 
-    public RecipeDetailResponse fetchRecipeData(int recipeId) {
-        RecipeDetailResponse recipe = recipeService.getRecipeById(recipeId);
-        return recipe;
-    }
+    @FXML
+    public void renderRecipeData(RecipeSummaryResponse recipeResponse) {
+        int recipeId = recipeResponse.getRecipeId();
+        RecipeDetailResponse recipeDetail = recipeService.getRecipeById(recipeId);
+        Recipe recipe = recipeDetail.getRecipe();
+        List<Ingredient> ingredients = recipeDetail.getIngredients();
+        loadRecipeData(
+            recipe.getRecipeId(),
+            recipe.getTitle(),
+            recipe.getPrepTime(),
+            recipe.getCookTime(),
+            ingredients,
+            recipe.getInstruction(),
+            recipe.getImgAddr()
+        );
 
+    }
 }
