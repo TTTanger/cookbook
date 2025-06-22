@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import g.DTO.CategoryResponse;
-import g.DTO.RecipeSummaryResponse;
-
+import g.dto.CategoryResponse;
+import g.dto.RecipeSummaryResponse;
 import g.dao.CategoryDAO;
 import g.dao.CategoryRecipeDAO;
 import g.dao.RecipeDAO;

@@ -26,6 +26,24 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         listViewController.setOnItemSelected(recipeDetailCardController::renderRecipeData);
+        recipeDetailCardController.setCallback(new RecipeDetailCardController.ActionCallback() {
+            @Override
+            public void onRecipeDeleted(int recipeId) {
+                listViewController.refreshList();
+            }
+
+            @Override
+            public void onRecipeUpdate(int recipeId) {
+                listViewController.refreshList();
+                // 打开更新窗口 或跳转界面
+            }
+
+            @Override
+            public void onBack() {
+                // 回到上一页
+                System.out.println("Back button clicked, returning to list view.");
+            }
+        });
     }
 
     @FXML
@@ -34,11 +52,9 @@ public class HomeController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/g/CreateView.fxml"));
             Parent root = loader.load();
-
-            // 获取创建页面的 controller
             CreateViewController controller = loader.getController();
 
-            // 设置回调函数（假设你已经把 ListViewController 作为成员变量 listViewController）
+            // Callback to refresh the list view after creation
             controller.setOnCreateSuccess(() -> {
                 System.out.println("CreateView 创建成功，回调刷新 ListView！");
                 listViewController.refreshList();
@@ -53,4 +69,5 @@ public class HomeController implements Initializable {
             System.err.println("无法加载 CreateView.fxml 页面");
         }
     }
+
 }

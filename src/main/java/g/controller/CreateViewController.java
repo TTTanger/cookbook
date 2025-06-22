@@ -1,41 +1,52 @@
 package g.controller;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import g.dto.RecipeDetailRequest;
+import g.model.Ingredient;
 import g.model.Recipe;
 import g.service.RecipeService;
-import g.DTO.RecipeDetailRequest;
-import g.model.Ingredient;
-
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class CreateViewController {
+
     private final RecipeService recipeService;
-    
-    @FXML private TextField titleField;
-    @FXML private TextField prepTimeField;
-    @FXML private TextField cookTimeField;
-    @FXML private TextField serveField;
-    @FXML private TextArea instructionField;
-    @FXML private Button submitButton;
-    @FXML private Button uploadButton;
+
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextField prepTimeField;
+    @FXML
+    private TextField cookTimeField;
+    @FXML
+    private TextField serveField;
+    @FXML
+    private TextArea instructionField;
+    @FXML
+    private VBox ingredientContainer;  // Dynamic container for ingredient entries
+    @FXML
+    private Button submitButton;
+    @FXML
+    private Button uploadButton;
 
     public CreateViewController() {
-        // JavaFX requires a no-arg constructor
-        this.recipeService = new RecipeService(); // 初始化服务层
+        this.recipeService = new RecipeService();
     }
+
     @FXML
     public void initialize() {
-        // 初始化方法，可以在这里设置默认值或进行其他初始化操作
+        addIngredient();  // Add an initial entry
         System.out.println("CreateViewController initialized");
     }
 
-    // 这里可以添加更多方法来处理创建视图的逻辑
     @FXML
     public void handleCreateRecipe() {
         String title = titleField.getText();
@@ -43,13 +54,51 @@ public class CreateViewController {
         String cookTime = cookTimeField.getText();
         String serve = serveField.getText();
         String instruction = instructionField.getText();
-        String imgAddr = "default_image.jpg"; 
-        List<Ingredient> ingredients = new ArrayList<>(); 
-        Ingredient testIngredient = new Ingredient();
-        testIngredient.setIngredientName("Test Ingredient");
-        testIngredient.setIngredientAmount(1);
-        testIngredient.setUnit("unit");
-        ingredients.add(testIngredient); 
+        String imgAddr = "default_image.jpg";
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        for (var node : ingredientContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                List<javafx.scene.Node> fields = hbox.getChildren();
+
+                TextField nameField = null;
+                TextField quantityField = null;
+                TextField unitField = null;
+
+                int fieldCount = 0;
+                for (javafx.scene.Node child : fields) {
+                    if (child instanceof TextField tf) {
+                        if (fieldCount == 0) {
+                            nameField = tf; 
+                        }else if (fieldCount == 1) {
+                            quantityField = tf; 
+                        }else if (fieldCount == 2) {
+                            unitField = tf;
+                        }
+                        fieldCount++;
+                    }
+                }
+
+                if (nameField != null && quantityField != null && unitField != null) {
+                    String name = nameField.getText();
+                    String quantityStr = quantityField.getText();
+                    String unit = unitField.getText();
+
+                    try {
+                        int quantity = Integer.parseInt(quantityStr);
+                        Ingredient ing = new Ingredient();
+                        ing.setIngredientName(name);
+                        ing.setIngredientAmount(quantity);
+                        ing.setUnit(unit);
+                        ingredients.add(ing);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid quantity: " + quantityStr);
+                        // 可选：提示用户输入错误
+                    }
+                }
+            }
+        }
+
         Recipe recipe = new Recipe();
         recipe.setTitle(title);
         recipe.setPrepTime(Integer.parseInt(prepTime));
@@ -57,19 +106,18 @@ public class CreateViewController {
         recipe.setServe(Integer.parseInt(serve));
         recipe.setInstruction(instruction);
         recipe.setImgAddr(imgAddr);
-        
+
         System.out.println("Creating recipe with title: " + title);
-        RecipeDetailRequest request = new RecipeDetailRequest(recipe, ingredients); 
+        RecipeDetailRequest request = new RecipeDetailRequest(recipe, ingredients);
 
         boolean success = recipeService.createRecipe(request);
         if (success) {
             System.out.println("Recipe created successfully!");
             if (onCreateSuccess != null) {
-            onCreateSuccess.run();
-        }
+                onCreateSuccess.run();
+            }
 
-        // 关闭窗口
-        ((Stage) submitButton.getScene().getWindow()).close();
+            ((Stage) submitButton.getScene().getWindow()).close();
         } else {
             System.out.println("Failed to create recipe.");
         }
@@ -77,11 +125,33 @@ public class CreateViewController {
 
     @FXML
     public void uploadClicked() {
-        // 处理上传图片的逻辑
         System.out.println("Upload button clicked");
-        // 这里可以添加文件选择对话框等逻辑来选择图片文件
     }
 
+    @FXML
+    private void addIngredient() {
+        HBox entry = new HBox(10);  // 水平间距10
+
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
+
+        TextField quantityField = new TextField();
+        quantityField.setPromptText("Amount");
+
+        TextField unitField = new TextField();
+        unitField.setPromptText("Unit");
+
+        Button addButton = new Button("+");
+        addButton.setOnAction(e -> addIngredient());
+
+        Button removeBtn = new Button("-");
+        removeBtn.setOnAction(e -> ingredientContainer.getChildren().remove(entry));
+
+        entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
+        ingredientContainer.getChildren().add(entry);
+    }
+
+    // Callback function
     private Runnable onCreateSuccess;
 
     public void setOnCreateSuccess(Runnable callback) {

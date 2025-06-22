@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -56,9 +57,15 @@
                   <AnchorPane fx:id="ingredientPlace" layoutX="14.0" layoutY="105.0"
                      prefHeight="85.0" prefWidth="389.0">
                      <children>
-                        <Label layoutX="0.0" layoutY="5.0" text="Ingredients" />
+                        <ScrollPane fx:id="ingredientPane" layoutX="0" layoutY="0" prefHeight="75.0"
+                           prefWidth="389.0" fitToWidth="true">
+                           <content>
+                              <VBox fx:id="ingredientContainer" prefHeight="317.0" prefWidth="191.0"/>
+                           </content>
+                        </ScrollPane>
                      </children>
                   </AnchorPane>
+
                </children>
             </AnchorPane>
          </children>

@@ -22,7 +22,7 @@ public class HomeTester extends Application {
             }
             
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            Scene scene = new Scene(loader.load(), 600, 800);
+            Scene scene = new Scene(loader.load(), 800, 800);
             
             primaryStage.setTitle("Home Tester");
             primaryStage.setScene(scene);

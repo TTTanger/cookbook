@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import g.DTO.RecipeDetailResponse;
-import g.DTO.RecipeSummaryResponse;
+import g.dto.RecipeDetailResponse;
+import g.dto.RecipeSummaryResponse;
 import g.model.Ingredient;
 import g.model.Recipe;
 import g.service.RecipeService;
@@ -82,15 +82,30 @@ public class RecipeDetailCardController implements Initializable {
 
     @FXML
     public void onRecipeDeleteClicked(ActionEvent event) {
-        System.out.println("Recipe delete button clicked for recipe ID: " + recipeId.getText());
         int id = Integer.parseInt(recipeId.getText());
         recipeService.deleteRecipe(id);
         System.out.println("Recipe with ID " + id + " deleted successfully.");
+
+        if (callback != null) {
+            callback.onRecipeDeleted(id);  // 通知父组件
+        }
     }
 
     @FXML
     public void onRecipeUpdateClicked(ActionEvent event) {
-        System.out.println("Recipe update button clicked for recipe ID: " + recipeId.getText());
+        int id = Integer.parseInt(recipeId.getText());
+        System.out.println("Recipe update button clicked");
+
+        if (callback != null) {
+            callback.onRecipeUpdate(id);  // 通知父组件
+        }
+    }
+
+    @FXML
+    public void onBackClicked(ActionEvent event) {
+        if (callback != null) {
+            callback.onBack();  // 通知父组件
+        }
     }
 
     @FXML
@@ -98,9 +113,20 @@ public class RecipeDetailCardController implements Initializable {
         System.out.println("Recipe categorize button clicked for recipe ID: " + recipeId.getText());
     }
 
-    @FXML
-    public void onBackClicked(ActionEvent event) {
-        System.out.println("Back button clicked");
+    // Callback interface for actions
+    public interface ActionCallback {
+
+        void onRecipeDeleted(int recipeId);
+
+        void onRecipeUpdate(int recipeId);
+
+        void onBack();
+    }
+
+    private ActionCallback callback;
+
+    public void setCallback(ActionCallback callback) {
+        this.callback = callback;
     }
 
 }
