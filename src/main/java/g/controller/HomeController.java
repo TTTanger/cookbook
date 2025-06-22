@@ -21,6 +21,9 @@ public class HomeController implements Initializable {
     private RecipeDetailCardController recipeDetailCardController;
 
     @FXML
+    private UpdateViewController updateViewController;
+
+    @FXML
     private Button createButton;
 
     @Override
@@ -34,6 +37,7 @@ public class HomeController implements Initializable {
 
             @Override
             public void onRecipeUpdate(int recipeId) {
+                
                 listViewController.refreshList();
                 // 打开更新窗口 或跳转界面
             }

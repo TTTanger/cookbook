@@ -55,6 +55,13 @@
 
                         <HBox spacing="10.0">
                             <children>
+                                <Label text="Servings:"/>
+                                <Label fx:id="serve" text="0"/>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="10.0">
+                            <children>
                                 <Label text="Ingredients:"/>
                                 <Label fx:id="ingredients" text="Ingredients List"/>
                             </children>
