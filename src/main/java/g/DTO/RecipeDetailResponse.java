@@ -1,4 +1,4 @@
-package g.DTO;
+package g.dto;
 
 import java.util.List;
 

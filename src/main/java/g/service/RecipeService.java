@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import g.DTO.RecipeDetailRequest;
-import g.DTO.RecipeDetailResponse;
-import g.DTO.RecipeSummaryResponse;
-
 import g.dao.IngredientDAO;
 import g.dao.RecipeDAO;
+import g.dto.RecipeDetailRequest;
+import g.dto.RecipeDetailResponse;
+import g.dto.RecipeSummaryResponse;
 import g.model.Ingredient;
 import g.model.Recipe;
 

@@ -3,9 +3,8 @@ package g.controller;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
-import g.DTO.RecipeSummaryResponse;
+import g.dto.RecipeSummaryResponse;
 import g.service.RecipeService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,8 +14,8 @@ import javafx.scene.control.ListView;
 
 public class ListViewController implements Initializable {
 
-    private Consumer<RecipeSummaryResponse> onItemSelected;
     private final RecipeService recipeService;
+
     @FXML
     private ListView<RecipeSummaryResponse> listView;
 
@@ -27,10 +26,6 @@ public class ListViewController implements Initializable {
     public List<RecipeSummaryResponse> fetchAllRecipeSummary() {
         System.out.println("Fetching recipe summary...");
         return recipeService.getAllRecipeSummary();
-    }
-
-    public void setOnItemSelected(Consumer<RecipeSummaryResponse> callback) {
-        this.onItemSelected = callback;
     }
 
     @Override
@@ -56,14 +51,11 @@ public class ListViewController implements Initializable {
 
         listView.setOnMouseClicked(event -> {
             RecipeSummaryResponse selected = listView.getSelectionModel().getSelectedItem();
-            System.out.println("点击事件触发，选中项: " + (selected != null ? selected.getTitle() : "null"));
-            System.out.println("回调函数: " + (onItemSelected != null ? "已设置" : "null"));
-
-            if (selected != null && onItemSelected != null) {
-                System.out.println("选中：" + selected.getTitle());
-                onItemSelected.accept(selected);
+            if (selected != null && callback != null) {
+                callback.onRecipeSelected(selected);
             }
         });
+
     }
 
     public void refreshList() {
@@ -71,6 +63,17 @@ public class ListViewController implements Initializable {
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
         listView.setItems(observableList);
         System.out.println("ListView 已刷新！");
+    }
+
+    // Callback for item selection
+    public interface RecipeSelectCallback {
+
+        void onRecipeSelected(RecipeSummaryResponse item);
+    }
+    private RecipeSelectCallback callback;
+
+    public void setOnItemSelected(RecipeSelectCallback callback) {
+        this.callback = callback;
     }
 
 }

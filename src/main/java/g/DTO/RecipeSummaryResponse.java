@@ -1,4 +1,4 @@
-package g.DTO;
+package g.dto;
 
 public class RecipeSummaryResponse {
     private int recipeId;
