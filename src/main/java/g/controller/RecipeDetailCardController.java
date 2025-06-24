@@ -16,7 +16,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
@@ -94,13 +96,23 @@ public class RecipeDetailCardController implements Initializable {
 
     @FXML
     public void onRecipeDeleteClicked(ActionEvent event) {
-        int id = Integer.parseInt(recipeId.getText());
-        recipeService.deleteRecipe(id);
-        System.out.println("Recipe with ID " + id + " deleted successfully.");
+        // 弹出确认对话框
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("确认删除");
+        alert.setHeaderText(null);
+        alert.setContentText("确定要删除该菜谱吗？");
 
-        if (callback != null) {
-            callback.onRecipeDeleted(id); 
-        }
+        alert.showAndWait().ifPresent(result -> {
+            if (result == ButtonType.OK) {
+                int id = Integer.parseInt(recipeId.getText());
+                recipeService.deleteRecipe(id);
+                System.out.println("Recipe with ID " + id + " deleted successfully.");
+
+                if (callback != null) {
+                    callback.onRecipeDeleted(id); 
+                }
+            }
+        });
     }
 
     @FXML

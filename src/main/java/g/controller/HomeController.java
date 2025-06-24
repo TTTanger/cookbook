@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class HomeController implements Initializable {
@@ -24,7 +23,8 @@ public class HomeController implements Initializable {
     private UpdateViewController updateViewController;
 
     @FXML
-    private Button createButton;
+    private SearchBarController searchBarController;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -37,15 +37,19 @@ public class HomeController implements Initializable {
 
             @Override
             public void onRecipeUpdate(int recipeId) {
-                
                 listViewController.refreshList();
-                // 打开更新窗口 或跳转界面
             }
 
             @Override
             public void onBack() {
                 // 回到上一页
                 System.out.println("Back button clicked, returning to list view.");
+            }
+        });
+        searchBarController.setCallback(new SearchBarController.ActionCallback() {
+            @Override
+            public void onSearch(String query) {
+                listViewController.search(query);
             }
         });
     }

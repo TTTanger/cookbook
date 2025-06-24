@@ -11,6 +11,7 @@
 
     <left>
         <VBox fx:id="leftPane" spacing="10.0" style="-fx-padding: 10;">
+            <fx:include fx:id="searchBar" source="SearchBar.fxml" />
             <fx:include fx:id="listView" source="ListView.fxml" />
             <Button fx:id="createRecipeButton" text="Create Recipe" onAction="#onCreateClicked" />
         </VBox>

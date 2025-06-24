@@ -89,7 +89,7 @@ public class UpdateViewController {
             }
         }
         this.instructionField.setText(instructions);
-
+        updateRemoveButtons();
     }
 
     @FXML
@@ -117,11 +117,30 @@ public class UpdateViewController {
         removeBtn.setOnAction(e -> {
             if (ingredientContainer.getChildren().size() > 1) {
                 ingredientContainer.getChildren().remove(entry);
+                updateRemoveButtons(); // 每次删除后更新减号按钮状态
             }
         });
 
         entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
         ingredientContainer.getChildren().add(entry);
+
+        updateRemoveButtons(); // 每次添加后更新减号按钮状态
+    }
+
+    /**
+     * 更新所有ingredient行的减号按钮状态：只有多于一行时才可用，否则禁用
+     */
+    private void updateRemoveButtons() {
+        int count = ingredientContainer.getChildren().size();
+        for (var node : ingredientContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                for (var child : hbox.getChildren()) {
+                    if (child instanceof Button btn && "-".equals(btn.getText())) {
+                        btn.setDisable(count <= 1);
+                    }
+                }
+            }
+        }
     }
 
     public void setPreviousData(RecipeDetailResponse previousData) {

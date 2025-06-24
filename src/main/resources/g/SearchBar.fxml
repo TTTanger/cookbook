@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+
+<HBox fx:controller="g.controller.SearchBarController" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="8" alignment="CENTER_LEFT">
+    <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS"/>
+    <Button fx:id="searchButton" onAction="#performSearch" text="Search" />
+</HBox>
