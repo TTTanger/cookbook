@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import g.dto.CategoryResponse;
-import g.dto.RecipeSummaryResponse;
 import g.dao.CategoryDAO;
 import g.dao.CategoryRecipeDAO;
 import g.dao.RecipeDAO;
+import g.dto.CategoryResponse;
+import g.dto.RecipeSummaryResponse;
 import g.model.Category;
 import g.model.Recipe;
 
@@ -23,7 +23,7 @@ public class CategoryService {
         categoryRecipeDAO = new CategoryRecipeDAO();
     }
 
-    public boolean addServiceToCategory(List<Integer> categoryIds, int recipeId) {
+    public boolean addRecipeToCategory(List<Integer> categoryIds, int recipeId) {
         boolean ifAdd = categoryRecipeDAO.addToCategory(categoryIds, recipeId);
         if (ifAdd) {
             System.out.println("Recipe added to all categories.");
@@ -34,7 +34,7 @@ public class CategoryService {
         }
     }
 
-    public boolean updateServiceToCategory(List<Integer> categoryIds, int recipeId) {
+    public boolean updateRecipeToCategory(List<Integer> categoryIds, int recipeId) {
         
         boolean ifClear = categoryRecipeDAO.clearCategoriesForRecipe(recipeId);
 

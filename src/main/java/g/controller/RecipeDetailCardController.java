@@ -155,6 +155,20 @@ public class RecipeDetailCardController implements Initializable {
     @FXML
     public void onRecipeCategorizeClicked(ActionEvent event) {
         System.out.println("Recipe categorize button clicked for recipe ID: " + recipeId.getText());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/g/AddRecipeToCategory.fxml"));
+            Parent root = loader.load();
+            AddRecipeToCategoryController controller = loader.getController();
+            controller.setRecipeId(Integer.parseInt(recipeId.getText()));
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Recipe to Category");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("无法加载 AddRecipeToCategory.fxml 页面");
+        }
     }
 
     
