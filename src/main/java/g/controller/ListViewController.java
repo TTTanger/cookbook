@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import g.dto.RecipeSummaryResponse;
+import g.service.CategoryService;
 import g.service.RecipeService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,12 +16,14 @@ import javafx.scene.control.ListView;
 public class ListViewController implements Initializable {
 
     private final RecipeService recipeService;
+    private final CategoryService categoryService;
 
     @FXML
     private ListView<RecipeSummaryResponse> listView;
 
     public ListViewController() {
         this.recipeService = new RecipeService();
+        this.categoryService = new CategoryService();
     }
 
     public List<RecipeSummaryResponse> fetchAllRecipeSummary() {
@@ -55,8 +58,18 @@ public class ListViewController implements Initializable {
                 callback.onRecipeSelected(selected);
             }
         });
-
     }
+
+    public void loadRecipesByCategory(int categoryId) {
+        System.out.println("Loading recipes for category ID: " + categoryId);
+        List<RecipeSummaryResponse> rawList = categoryService.getRecipeSummaryByCategoryId(categoryId);
+        ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
+        listView.setItems(observableList);
+        System.out.println("ListView 已加载分类下的食谱！");
+    }
+
+    
+
 
     public void refreshList() {
         List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
@@ -80,15 +93,13 @@ public class ListViewController implements Initializable {
         System.out.println("ListView 已根据关键字过滤并刷新！");
     }
 
-    // Callback for item selection
+    // Callback for recipe item selection
     public interface RecipeSelectCallback {
-
         void onRecipeSelected(RecipeSummaryResponse item);
     }
     private RecipeSelectCallback callback;
 
-    public void setOnItemSelected(RecipeSelectCallback callback) {
+    public void setOnRecipeSelected(RecipeSelectCallback callback) {
         this.callback = callback;
     }
-
-}
+}   

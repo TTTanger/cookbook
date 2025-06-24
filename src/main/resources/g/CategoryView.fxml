@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:controller="g.controller.CategoryViewController"
+    xmlns="http://javafx.com/javafx/23.0.1"
+    xmlns:fx="http://javafx.com/fxml/1"
+    prefHeight="400.0" prefWidth="800.0">
+
+    <left>
+        <VBox fx:id="leftPane" spacing="10.0" style="-fx-padding: 10;">
+            <fx:include fx:id="searchBar" source="SearchBar.fxml" />
+            <fx:include fx:id="categoryList" source="CategoryList.fxml" />
+            <Button fx:id="createCategoryButton" text="Create Category" onAction="#onCreateClicked" />
+        </VBox>
+    </left>
+
+    <center>
+        <fx:include fx:id="listView" source="ListView.fxml" />
+    </center>
+    <right>
+        <VBox fx:id="rightPane" spacing="10.0" style="-fx-padding: 10;">
+            <fx:include fx:id="recipeDetailCard" source="RecipeDetailCard.fxml" />
+        </VBox>
+    </right>
+</BorderPane>

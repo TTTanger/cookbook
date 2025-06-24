@@ -28,7 +28,7 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        listViewController.setOnItemSelected(recipeDetailCardController::renderRecipeData);
+        listViewController.setOnRecipeSelected(recipeDetailCardController::renderRecipeData);
         recipeDetailCardController.setCallback(new RecipeDetailCardController.ActionCallback() {
             @Override
             public void onRecipeDeleted(int recipeId) {
