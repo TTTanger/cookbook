@@ -130,7 +130,7 @@ public class CreateViewController {
 
     @FXML
     private void addIngredient() {
-        HBox entry = new HBox(10);  // 水平间距10
+        HBox entry = new HBox(10);  
 
         TextField nameField = new TextField();
         nameField.setPromptText("Name");

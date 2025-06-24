@@ -34,7 +34,7 @@ public class UpdateViewController {
     @FXML
     private TextArea instructionField;
     @FXML
-    private VBox ingredientContainer;  // Dynamic container for ingredient entries
+    private VBox ingredientContainer; 
     @FXML
     private Button submitButton;
     @FXML
@@ -46,7 +46,9 @@ public class UpdateViewController {
 
     @FXML
     public void initialize() {
-
+        if (ingredientContainer.getChildren().isEmpty()) {
+                addIngredient();
+            }
         System.out.println("UpdateViewController initialized");
     }
 
@@ -177,7 +179,6 @@ public class UpdateViewController {
                         ingredients.add(ing);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid quantity: " + quantityStr);
-                        // 可选：提示用户输入错误
                     }
                 }
             }
@@ -188,7 +189,7 @@ public class UpdateViewController {
             System.out.println("Recipe updated successfully!");
             // Optionally, you can close the window or reset the form
         } else {
-            System.out.println("Failed to update recipe.");
+            System.out.println("UpdateView Failed to update recipe!");
         }
     }
 }

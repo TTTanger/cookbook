@@ -42,7 +42,7 @@ public class RecipeService {
         );
 
         if (createRecipeResult == -1) {
-            System.out.println("Failed to create recipe");
+            System.out.println("RecipeService failed to create recipe");
             return false;
         }
 
@@ -54,7 +54,7 @@ public class RecipeService {
                     ingredient.getUnit()
             );
             if (!createIngredientResult) {
-                System.out.println("Failed to insert ingredient: " + ingredient);
+                System.out.println("RecipeService failed to insert ingredient: " + ingredient);
                 return false;
             }
         }
