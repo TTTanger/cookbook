@@ -46,39 +46,47 @@ public class UpdateViewController {
 
     @FXML
     public void initialize() {
-        if (ingredientContainer.getChildren().isEmpty()) {
-                addIngredient();
-            }
         System.out.println("UpdateViewController initialized");
+        // 只在没有已有数据时添加空 ingredient 条目
+        if (ingredientContainer.getChildren().isEmpty()) {
+            addIngredient();
+        }
     }
 
     @FXML
     public void loadPreviousData(String title, int prepTime, int cookTime, int serve,
-            List<Ingredient> ingredients, String instructions,
-            String imgAddr) {
+            List<Ingredient> ingredients, String instructions, String imgAddr) {
+        // 先清空容器，避免重复添加
+        ingredientContainer.getChildren().clear();
+
         this.titleField.setText(title);
         this.prepTimeField.setText(String.valueOf(prepTime));
         this.cookTimeField.setText(String.valueOf(cookTime));
         this.serveField.setText(String.valueOf(serve));
-        HBox entry = new HBox(10);
-        for (Ingredient ingredient : ingredients) {
-            TextField nameField = new TextField(ingredient.getIngredientName());
-            nameField.setPromptText("Name");
 
-            TextField quantityField = new TextField(String.valueOf(ingredient.getIngredientAmount()));
-            quantityField.setPromptText("Amount");
+        if (ingredients == null || ingredients.isEmpty()) {
+            addIngredient(); // 没有已有数据时才添加空行
+        } else {
+            for (Ingredient ingredient : ingredients) {
+                HBox entry = new HBox(10);
+                TextField nameField = new TextField(ingredient.getIngredientName());
+                nameField.setPromptText("Name");
 
-            TextField unitField = new TextField(ingredient.getUnit());
-            unitField.setPromptText("Unit");
+                TextField quantityField = new TextField(String.valueOf(ingredient.getIngredientAmount()));
+                quantityField.setPromptText("Amount");
 
-            Button addButton = new Button("+");
-            addButton.setOnAction(e -> addIngredient());
+                TextField unitField = new TextField(ingredient.getUnit());
+                unitField.setPromptText("Unit");
 
-            Button removeBtn = new Button("-");
-            removeBtn.setOnAction(e -> ingredientContainer.getChildren().remove(entry));
+                Button addButton = new Button("+");
+                addButton.setOnAction(e -> addIngredient());
 
-            entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
-            ingredientContainer.getChildren().add(entry);
+                Button removeBtn = new Button("-");
+                removeBtn.setOnAction(e -> ingredientContainer.getChildren().remove(entry));
+
+                entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
+                ingredientContainer.getChildren().add(entry);
+            }
         }
         this.instructionField.setText(instructions);
 
@@ -106,7 +114,11 @@ public class UpdateViewController {
         addButton.setOnAction(e -> addIngredient());
 
         Button removeBtn = new Button("-");
-        removeBtn.setOnAction(e -> ingredientContainer.getChildren().remove(entry));
+        removeBtn.setOnAction(e -> {
+            if (ingredientContainer.getChildren().size() > 1) {
+                ingredientContainer.getChildren().remove(entry);
+            }
+        });
 
         entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
         ingredientContainer.getChildren().add(entry);
