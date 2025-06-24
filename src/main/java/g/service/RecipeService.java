@@ -51,7 +51,7 @@ public class RecipeService {
                     createRecipeResult,
                     ingredient.getIngredientName(),
                     ingredient.getIngredientAmount(),
-                    ingredient.getUnit()
+                    ingredient.getIngredientUnit()
             );
             if (!createIngredientResult) {
                 System.out.println("RecipeService failed to insert ingredient: " + ingredient);
@@ -75,13 +75,25 @@ public class RecipeService {
     public boolean updateRecipe(RecipeDetailRequest request) {
         Recipe recipe = request.getRecipe();
         List<Ingredient> ingredients = request.getIngredients();
+        List<Integer> deleteList = request.getDeleteIds();
+        for (int pairId : deleteList) {
+            ingredientDAO.deleteIngredient(pairId);
+        }
+        
         for (Ingredient ingredient : ingredients) {
+            if (ingredient.getPairId() == 0) {
+            ingredientDAO.addIngredient(
+                    recipe.getRecipeId(),
+                    ingredient.getIngredientName(),
+                    ingredient.getIngredientAmount(),
+                    ingredient.getIngredientUnit());
+            }
             boolean updateIngredientResult = ingredientDAO.updateIngredient(
                     ingredient.getPairId(),
                     recipe.getRecipeId(),
                     ingredient.getIngredientName(),
                     ingredient.getIngredientAmount(),
-                    ingredient.getUnit()
+                    ingredient.getIngredientUnit()
             );
             if (!updateIngredientResult) {
                 System.out.println("Failed to insert ingredient: " + ingredient);
