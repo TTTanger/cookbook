@@ -3,9 +3,9 @@ package g.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Statement;
 
 import g.model.Recipe;
 import g.utils.DBUtil;
@@ -100,7 +100,7 @@ public class RecipeDAO {
                     recipe.setPrepTime(rs.getInt("prep_time"));
                     recipe.setCookTime(rs.getInt("cook_time"));
                     recipe.setInstruction(rs.getString("instruction"));
-                    recipe.setImgAddr(rs.getString("img_Addr"));
+                    recipe.setImgAddr(rs.getString("img_addr"));
                     recipe.setServe(rs.getInt("serve"));
 
                     System.out.println("Recipe found: " + recipe.getTitle());
@@ -118,7 +118,7 @@ public class RecipeDAO {
     }
 
     public Recipe getRecipeSummaryById(int recipeId) {
-        String sql = "SELECT recipe_id, title, img_addr FROM recipe WHERE recipe_id LIKE ?";
+        String sql = "SELECT recipe_id, title, img_addr FROM recipe WHERE recipe_id = ?";
 
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
