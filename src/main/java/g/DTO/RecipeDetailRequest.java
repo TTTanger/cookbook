@@ -9,10 +9,12 @@ public class RecipeDetailRequest {
     
     private Recipe recipe;
     private List<Ingredient> ingredients;
+    private List<Integer> deleteIds;
 
-    public RecipeDetailRequest(Recipe recipe, List<Ingredient> ingredients) {
+    public RecipeDetailRequest(Recipe recipe, List<Ingredient> ingredients,List<Integer> deleteIds) {
         this.recipe = recipe;
         this.ingredients = ingredients;
+        this.deleteIds = deleteIds;
     }
 
     public Recipe getRecipe() {
@@ -29,5 +31,13 @@ public class RecipeDetailRequest {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public List<Integer> getDeleteIds() {
+        return deleteIds;
+    }
+
+    public void setDeleteIds(List<Integer> deleteIds) {
+        this.deleteIds = deleteIds;
     }
 }

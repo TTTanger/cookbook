@@ -45,13 +45,12 @@ public class IngredientDAO {
         }
     }
     
-    public boolean deleteIngredient(int pairId, int recipeId) {
-        String sql = "DELETE FROM ingredient WHERE pair_id = ? AND recipe_id = ?";
+    public boolean deleteIngredient(int pairId) {
+        String sql = "DELETE FROM ingredient WHERE pair_id = ? ";
         try (Connection conn = DBUtil.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, pairId);
-            stmt.setInt(2, recipeId);
 
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
@@ -117,7 +116,7 @@ public class IngredientDAO {
                     Ingredient ingredient = new Ingredient();
                     ingredient.setIngredientName(rs.getString("ingredient_name"));
                     ingredient.setIngredientAmount(rs.getInt("ingredient_amount"));
-                    ingredient.setUnit(rs.getString("unit"));
+                    ingredient.setIngredientUnit(rs.getString("unit"));
                     ingredient.setPairId(rs.getInt("pair_id"));
                     ingredients.add(ingredient);
                     System.out.println("Ingredient found: " + ingredient.getIngredientName());

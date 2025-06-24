@@ -7,17 +7,17 @@ public class Ingredient {
     private int recipeId;
     private String ingredientName;
     private int ingredientAmount;
-    private String unit;
+    private String ingredientUnit;
 
     public Ingredient() {
     }
 
-    public Ingredient(int pairId, int recipeId, String ingredientName, int ingredientAmount, String unit) {
+    public Ingredient(int pairId, int recipeId, String ingredientName, int ingredientAmount, String ingredientUnit) {
         this.pairId = pairId;
         this.recipeId = recipeId;
         this.ingredientName = ingredientName;
         this.ingredientAmount = ingredientAmount;
-        this.unit = unit;
+        this.ingredientUnit = ingredientUnit;
     }
 
     public int getPairId() {
@@ -52,38 +52,14 @@ public class Ingredient {
         this.ingredientAmount = ingredientAmount;
     }
 
-    public String getUnit() {
-        return this.unit;
+    public String getIngredientUnit() {
+        return this.ingredientUnit;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setIngredientUnit(String ingredientUnit) {
+        this.ingredientUnit = ingredientUnit;
     }
 
-    public Ingredient pairId(int pairId) {
-        setPairId(pairId);
-        return this;
-    }
-
-    public Ingredient recipeId(int recipeId) {
-        setRecipeId(recipeId);
-        return this;
-    }
-
-    public Ingredient ingredientName(String ingredientName) {
-        setIngredientName(ingredientName);
-        return this;
-    }
-
-    public Ingredient ingredientAmount(int ingredientAmount) {
-        setIngredientAmount(ingredientAmount);
-        return this;
-    }
-
-    public Ingredient unit(String unit) {
-        setUnit(unit);
-        return this;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -93,7 +69,7 @@ public class Ingredient {
             return false;
         }
         Ingredient ingredient = (Ingredient) o;
-        return pairId == ingredient.pairId && recipeId == ingredient.recipeId && Objects.equals(ingredientName, ingredient.ingredientName) && ingredientAmount == ingredient.ingredientAmount && Objects.equals(unit, ingredient.unit);
+        return pairId == ingredient.pairId && recipeId == ingredient.recipeId && Objects.equals(ingredientName, ingredient.ingredientName) && ingredientAmount == ingredient.ingredientAmount && Objects.equals(ingredientUnit, ingredient.ingredientUnit);
     }
 
     @Override
@@ -103,7 +79,7 @@ public class Ingredient {
             ", recipeId='" + getRecipeId() + "'" +
             ", ingredientName='" + getIngredientName() + "'" +
             ", ingredientAmount='" + getIngredientAmount() + "'" +
-            ", unit='" + getUnit() + "'" +
+            ", unit='" + getIngredientUnit() + "'" +
             "}";
     }
 }
