@@ -65,6 +65,21 @@ public class ListViewController implements Initializable {
         System.out.println("ListView 已刷新！");
     }
 
+    public void search(String keyword) {
+        List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
+        List<RecipeSummaryResponse> filteredList;
+        if (keyword == null || keyword.isBlank()) {
+            filteredList = rawList; 
+        } else {
+            filteredList = rawList.stream()
+                .filter(item -> item.getTitle() != null && item.getTitle().toLowerCase().contains(keyword.toLowerCase()))
+                .toList();
+        }
+        ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(filteredList);
+        listView.setItems(observableList);
+        System.out.println("ListView 已根据关键字过滤并刷新！");
+    }
+
     // Callback for item selection
     public interface RecipeSelectCallback {
 

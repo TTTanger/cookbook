@@ -43,7 +43,8 @@ public class CreateViewController {
 
     @FXML
     public void initialize() {
-        addIngredient();  // Add an initial entry
+        addIngredient(); 
+        updateRemoveButtons(); 
         System.out.println("CreateViewController initialized");
     }
 
@@ -93,7 +94,6 @@ public class CreateViewController {
                         ingredients.add(ing);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid quantity: " + quantityStr);
-                        // 可选：提示用户输入错误
                     }
                 }
             }
@@ -130,7 +130,7 @@ public class CreateViewController {
 
     @FXML
     private void addIngredient() {
-        HBox entry = new HBox(10);  
+        HBox entry = new HBox(10);
 
         TextField nameField = new TextField();
         nameField.setPromptText("Name");
@@ -145,10 +145,33 @@ public class CreateViewController {
         addButton.setOnAction(e -> addIngredient());
 
         Button removeBtn = new Button("-");
-        removeBtn.setOnAction(e -> ingredientContainer.getChildren().remove(entry));
+        removeBtn.setOnAction(e -> {
+            if (ingredientContainer.getChildren().size() > 1) {
+                ingredientContainer.getChildren().remove(entry);
+                updateRemoveButtons(); // 每次删除后更新减号按钮状态
+            }
+        });
 
         entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
         ingredientContainer.getChildren().add(entry);
+
+        updateRemoveButtons(); // 每次添加后更新减号按钮状态
+    }
+
+    /**
+     * 更新所有ingredient行的减号按钮状态：只有多于一行时才可用，否则禁用
+     */
+    private void updateRemoveButtons() {
+        int count = ingredientContainer.getChildren().size();
+        for (var node : ingredientContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                for (var child : hbox.getChildren()) {
+                    if (child instanceof Button btn && "-".equals(btn.getText())) {
+                        btn.setDisable(count <= 1);
+                    }
+                }
+            }
+        }
     }
 
     // Callback function
