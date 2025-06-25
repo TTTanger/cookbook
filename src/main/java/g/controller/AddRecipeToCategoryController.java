@@ -59,7 +59,6 @@ public class AddRecipeToCategoryController implements Initializable {
 
     @FXML
     private void onConfirm() {
-        // 当前勾选的分类id
         List<Integer> selectedCategoryIds = categoryCheckBoxContainer.getChildren().stream()
                 .filter(node -> node instanceof CheckBox cb && cb.isSelected())
                 .map(node -> (Integer) ((CheckBox) node).getUserData())
@@ -70,33 +69,30 @@ public class AddRecipeToCategoryController implements Initializable {
             return;
         }
 
-        // 原始已选分类id
         List<Integer> originalCategoryIds = originalCategories.stream()
                 .map(CategoryResponse::getCategoryId)
                 .collect(Collectors.toList());
 
-        // 计算新增和取消的分类
-        List<Integer> toAdd = selectedCategoryIds.stream()
-                .filter(id -> !originalCategoryIds.contains(id))
-                .collect(Collectors.toList());
-        List<Integer> toRemove = originalCategoryIds.stream()
-                .filter(id -> !selectedCategoryIds.contains(id))
-                .collect(Collectors.toList());
+        // 判断是否有变化
+        boolean changed = !(selectedCategoryIds.size() == originalCategoryIds.size()
+                && selectedCategoryIds.containsAll(originalCategoryIds)
+                && originalCategoryIds.containsAll(selectedCategoryIds));
 
-        boolean success = true;
-        if (!toAdd.isEmpty()) {
-            success &= categoryService.addRecipeToCategory(toAdd, recipeId);
-        }
-        if (!toRemove.isEmpty()) {
-            success &= categoryService.updateRecipeToCategory(toRemove, recipeId);
-        }
-
-        if (success) {
-            showAlert("成功", "分类已更新！");
+        if (!changed) {
+            // 没有变化，直接关闭窗口
             closeWindow();
-        } else {
-            showAlert("失败", "更新分类失败！");
+            return;
         }
+
+        // 有变化才更新
+        boolean updateSuccess = categoryService.updateRecipeToCategory(selectedCategoryIds, recipeId);
+        if (!updateSuccess) {
+            showAlert("失败", "更新分类失败！");
+            return;
+        }
+
+        showAlert("成功", "分类已更新！");
+        closeWindow();
     }
 
     @FXML

@@ -51,7 +51,6 @@ public class UpdateViewController {
     @FXML
     public void initialize() {
         System.out.println("UpdateViewController initialized");
-        // 只在没有已有数据时添加空 ingredient 条目
         if (ingredientContainer.getChildren().isEmpty()) {
             addIngredient();
         }
@@ -60,7 +59,6 @@ public class UpdateViewController {
     @FXML
     public void loadPreviousData(String title, int prepTime, int cookTime, int serve,
             List<Ingredient> ingredients, String instructions, String imgAddr) {
-        // 先清空容器，避免重复添加
         ingredientContainer.getChildren().clear();
 
         this.titleField.setText(title);
@@ -146,12 +144,9 @@ public class UpdateViewController {
         entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
         ingredientContainer.getChildren().add(entry);
 
-        updateRemoveButtons(); // 每次添加后更新减号按钮状态
+        updateRemoveButtons(); 
     }
-
-    /**
-     * 更新所有ingredient行的减号按钮状态：只有多于一行时才可用，否则禁用
-     */
+    
     private void updateRemoveButtons() {
         int count = ingredientContainer.getChildren().size();
         for (var node : ingredientContainer.getChildren()) {
@@ -182,14 +177,13 @@ public class UpdateViewController {
     }
 
     public void handleUpdateRecipe() {
-        // 弹出确认对话框
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("确认更新");
         confirmAlert.setHeaderText(null);
         confirmAlert.setContentText("确定要保存对菜谱的修改吗？");
         var result = confirmAlert.showAndWait();
         if (result.isEmpty() || result.get() != ButtonType.OK) {
-            return; // 用户取消
+            return; 
         }
 
         String title = titleField.getText();
@@ -261,12 +255,10 @@ public class UpdateViewController {
             Alert info = new Alert(Alert.AlertType.INFORMATION, "菜谱更新成功！", ButtonType.OK);
             info.showAndWait();
 
-            // ✅ 通知 DetailCardController 刷新数据
             if (updateCallback != null) {
                 updateCallback.onUpdateSuccess();
             }
 
-            // 然后再关闭窗口
             Stage stage = (Stage) submitButton.getScene().getWindow();
             stage.close();
         }

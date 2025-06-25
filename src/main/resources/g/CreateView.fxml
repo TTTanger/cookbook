@@ -5,75 +5,69 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:controller="g.controller.CreateViewController" maxHeight="-Infinity"
-   maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="404.0"
-   prefWidth="616.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:controller="g.controller.CreateViewController"
+   prefHeight="500.0" prefWidth="640.0"
+   xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   style="-fx-background-color: #f8f9fa;">
    <children>
-      <HBox layoutX="20.0" layoutY="54.0" prefHeight="317.0" prefWidth="560.0" spacing="20.0"
-         AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
-         AnchorPane.topAnchor="54.0">
-         <children>
-            <VBox prefHeight="317.0" prefWidth="191.0">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="59.0"
-                     prefWidth="177.0" text="Please upload your image " />
-                  <ImageView fx:id="productImageView" fitHeight="130.0" fitWidth="158.0"
-                     opacity="0.43" pickOnBounds="true">
-                     <image>
-                        <Image url="@Upload_Img.png" />
-                     </image>
-                  </ImageView>
-                  <Button fx:id="uploadButton" mnemonicParsing="false" onAction="#uploadClicked"
-                     text="upload" />
-               </children>
-            </VBox>
-            <AnchorPane prefHeight="317.0" prefWidth="433.0">
-               <children>
-                  <Label layoutX="14.0" layoutY="14.0" text="Name" />
-                  <TextField fx:id="titleField" layoutX="63.0" layoutY="10.0" prefHeight="23.0"
-                     prefWidth="263.0" />
-                  <Label layoutX="14.0" layoutY="47.0" text="Preptime" />
-                  <TextField fx:id="prepTimeField" layoutX="72.0" layoutY="43.0" prefHeight="15.0"
-                     prefWidth="59.0" />
-                  <Label layoutX="14.0" layoutY="80.0" text="Cooktime" />
-                  <TextField fx:id="cookTimeField" layoutX="72.0" layoutY="76.0" prefHeight="15.0"
-                     prefWidth="59.0" />
-                  <Label layoutX="171.0" layoutY="46.0" text="Serve" />
-                  <TextField fx:id="serveField" layoutX="210.0" layoutY="43.0" prefHeight="23.0"
-                     prefWidth="66.0" />
-                  <Label layoutX="14.0" layoutY="197.0" text="Instruction" />
-                  <TextArea fx:id="instructionField" layoutX="15.0" layoutY="217.0"
-                     prefHeight="85.0" prefWidth="389.0" />
-                  <Button fx:id="submitButton" layoutX="344.0" layoutY="303.0"
-                     mnemonicParsing="false" onAction="#handleCreateRecipe" prefHeight="23.0"
-                     prefWidth="54.0" text="Done" />
-                  <AnchorPane fx:id="ingredientPlace" layoutX="14.0" layoutY="105.0"
-                     prefHeight="85.0" prefWidth="389.0">
-                     <children>
-                        <ScrollPane fx:id="ingredientPane" layoutX="0" layoutY="0" prefHeight="75.0"
-                           prefWidth="389.0" fitToWidth="true">
-                           <content>
-                              <VBox fx:id="ingredientContainer" prefHeight="317.0" prefWidth="191.0"/>
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-
-               </children>
-            </AnchorPane>
-         </children>
-      </HBox>
-      <Label layoutX="268.0" layoutY="14.0" prefHeight="31.0" prefWidth="79.0" text="Create">
+      <Label text="Create"
+         AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="14.0"
+         style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #228be6;">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
+      <HBox spacing="24.0"
+         AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="54.0"
+         style="-fx-background-color: #fff; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, #b0b0b0, 12, 0.2, 0, 2); -fx-padding: 24;">
+         <children>
+            <VBox spacing="16.0" alignment="CENTER" prefWidth="200.0" maxWidth="220.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" text="Please upload your image "
+                     style="-fx-font-size: 14px; -fx-text-fill: #495057;"/>
+                  <ImageView fx:id="productImageView" fitHeight="130.0" fitWidth="158.0"
+                     opacity="0.43" pickOnBounds="true"
+                     style="-fx-background-radius: 12;"/>
+                  <Button fx:id="uploadButton" mnemonicParsing="false" onAction="#uploadClicked"
+                     text="Upload"
+                     style="-fx-background-radius: 8; -fx-background-color: #228be6; -fx-text-fill: white;"/>
+               </children>
+            </VBox>
+            <VBox spacing="10.0" fillWidth="true" alignment="TOP_LEFT">
+               <children>
+                  <HBox spacing="10.0">
+                     <Label text="Name" style="-fx-font-size: 13px;"/>
+                     <TextField fx:id="titleField" style="-fx-background-radius: 8;" HBox.hgrow="ALWAYS"/>
+                  </HBox>
+                  <HBox spacing="10.0">
+                     <Label text="Preptime" style="-fx-font-size: 13px;"/>
+                     <TextField fx:id="prepTimeField" style="-fx-background-radius: 8;" maxWidth="60"/>
+                     <Label text="Cooktime" style="-fx-font-size: 13px;"/>
+                     <TextField fx:id="cookTimeField" style="-fx-background-radius: 8;" maxWidth="60"/>
+                     <Label text="Serve" style="-fx-font-size: 13px;"/>
+                     <TextField fx:id="serveField" style="-fx-background-radius: 8;" maxWidth="60"/>
+                  </HBox>
+                  <Label text="Instruction" style="-fx-font-size: 13px;"/>
+                  <TextArea fx:id="instructionField" prefHeight="60.0" style="-fx-background-radius: 8;"/>
+                  <Label text="Ingredients" style="-fx-font-size: 13px;"/>
+                  <ScrollPane fx:id="ingredientPane" fitToWidth="true" prefHeight="60.0" style="-fx-background-radius: 8;">
+                     <content>
+                        <VBox fx:id="ingredientContainer"/>
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="submitButton"
+                     mnemonicParsing="false" onAction="#handleCreateRecipe" prefHeight="28.0"
+                     prefWidth="70.0" text="Done"
+                     style="-fx-background-radius: 8; -fx-background-color: #51cf66; -fx-text-fill: white;"/>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

@@ -7,21 +7,30 @@
 <BorderPane fx:controller="g.controller.CategoryViewController"
     xmlns="http://javafx.com/javafx/23.0.1"
     xmlns:fx="http://javafx.com/fxml/1"
-    prefHeight="400.0" prefWidth="800.0">
+    prefHeight="600.0" prefWidth="1100.0"
+    style="-fx-background-color: #f8f9fa;">
 
     <left>
-        <VBox fx:id="leftPane" spacing="10.0" style="-fx-padding: 10;">
+        <VBox fx:id="leftPane"
+              spacing="18.0"
+              style="-fx-padding: 24 16 24 24; -fx-background-color: #ffffff; -fx-background-radius: 12;"
+              prefWidth="220">
             <fx:include fx:id="searchBar" source="SearchBar.fxml" />
             <fx:include fx:id="categoryList" source="CategoryList.fxml" />
-            <Button fx:id="createCategoryButton" text="Create Category" onAction="#onCreateClicked" />
+            <Button fx:id="createCategoryButton"
+                    text="Create Category"
+                    style="-fx-background-radius: 8; -fx-background-color: #e7f5ff; -fx-text-fill: #228be6; -fx-font-size: 14px"/>
         </VBox>
     </left>
 
     <center>
         <fx:include fx:id="listView" source="ListView.fxml" />
     </center>
+
     <right>
-        <VBox fx:id="rightPane" spacing="10.0" style="-fx-padding: 10;">
+        <VBox fx:id="rightPane"
+              spacing="10.0"
+              prefWidth="340">
             <fx:include fx:id="recipeDetailCard" source="RecipeDetailCard.fxml" />
         </VBox>
     </right>

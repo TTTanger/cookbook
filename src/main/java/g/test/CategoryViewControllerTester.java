@@ -21,7 +21,8 @@ public class CategoryViewControllerTester extends Application {
             }
             
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            Scene scene = new Scene(loader.load(), 600, 800);
+            Scene scene = new Scene(loader.load(), 600, 400);
+            scene.getStylesheets().add(getClass().getResource("/g/app.css").toExternalForm());
             
             primaryStage.setTitle("Category View Tester");
             primaryStage.setScene(scene);

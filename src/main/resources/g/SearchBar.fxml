@@ -6,7 +6,10 @@
 
 <HBox fx:controller="g.controller.SearchBarController" xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
-      spacing="8" alignment="CENTER_LEFT">
-    <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS"/>
-    <Button fx:id="searchButton" onAction="#performSearch" text="Search" />
+      spacing="10" alignment="CENTER_LEFT"
+      style="-fx-padding: 10 16; -fx-background-color: #f8f9fa; -fx-background-radius: 8;">
+    <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS"
+               style="-fx-background-radius: 8; -fx-font-size: 14px;"/>
+    <Button fx:id="searchButton" onAction="#performSearch" text="🔍"
+            style="-fx-background-radius: 8; -fx-background-color: #228be6; -fx-text-fill: white;"/>
 </HBox>
