@@ -55,7 +55,7 @@ public class ListViewController implements Initializable {
         listView.setOnMouseClicked(event -> {
             RecipeSummaryResponse selected = listView.getSelectionModel().getSelectedItem();
             if (selected != null && callback != null) {
-                callback.onRecipeSelected(selected);
+                callback.onRecipeSelected(selected.getRecipeId());
             }
         });
     }
@@ -68,9 +68,6 @@ public class ListViewController implements Initializable {
         System.out.println("ListView 已加载分类下的食谱！");
     }
 
-    
-
-
     public void refreshList() {
         List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
@@ -78,15 +75,27 @@ public class ListViewController implements Initializable {
         System.out.println("ListView 已刷新！");
     }
 
+    public void refreshListAndRetainSelection(int recipeIdToKeepSelected) {
+        refreshList(); // 原来的刷新逻辑
+
+        // 找到刚才的那个 recipe 对象，并重新选中
+        for (RecipeSummaryResponse item : listView.getItems()) {
+            if (item.getRecipeId() == recipeIdToKeepSelected) {
+                listView.getSelectionModel().select(item);
+                break;
+            }
+        }
+    }
+
     public void search(String keyword) {
         List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
         List<RecipeSummaryResponse> filteredList;
         if (keyword == null || keyword.isBlank()) {
-            filteredList = rawList; 
+            filteredList = rawList;
         } else {
             filteredList = rawList.stream()
-                .filter(item -> item.getTitle() != null && item.getTitle().toLowerCase().contains(keyword.toLowerCase()))
-                .toList();
+                    .filter(item -> item.getTitle() != null && item.getTitle().toLowerCase().contains(keyword.toLowerCase()))
+                    .toList();
         }
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(filteredList);
         listView.setItems(observableList);
@@ -94,12 +103,13 @@ public class ListViewController implements Initializable {
     }
 
     // Callback for recipe item selection
-    public interface RecipeSelectCallback {
-        void onRecipeSelected(RecipeSummaryResponse item);
-    }
-    private RecipeSelectCallback callback;
+    public interface ActionCallback {
 
-    public void setOnRecipeSelected(RecipeSelectCallback callback) {
+        void onRecipeSelected(int recipeId);
+    }
+    private ActionCallback callback;
+
+    public void setCallback(ActionCallback callback) {
         this.callback = callback;
     }
-}   
+}

@@ -5,7 +5,7 @@ public class RecipeSummaryResponse {
     private String title;
     private String imgAddr;
 
-    public RecipeSummaryResponse(int recipeId,String title, String imgAddr) {
+    public RecipeSummaryResponse(int recipeId, String title, String imgAddr) {
         this.recipeId = recipeId;
         this.title = title;
         this.imgAddr = imgAddr;

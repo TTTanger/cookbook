@@ -74,30 +74,38 @@ public class RecipeService {
 
     public boolean updateRecipe(RecipeDetailRequest request) {
         Recipe recipe = request.getRecipe();
+        System.out.println("RecipeService: Updating recipe with id " + recipe.getRecipeId());
         List<Ingredient> ingredients = request.getIngredients();
         List<Integer> deleteList = request.getDeleteIds();
         for (int pairId : deleteList) {
+            System.out.println("RecipeService: Deleting ingredient with pairId " + pairId);
             ingredientDAO.deleteIngredient(pairId);
         }
         
         for (Ingredient ingredient : ingredients) {
             if (ingredient.getPairId() == 0) {
-            ingredientDAO.addIngredient(
-                    recipe.getRecipeId(),
-                    ingredient.getIngredientName(),
-                    ingredient.getIngredientAmount(),
-                    ingredient.getIngredientUnit());
-            }
-            boolean updateIngredientResult = ingredientDAO.updateIngredient(
-                    ingredient.getPairId(),
-                    recipe.getRecipeId(),
-                    ingredient.getIngredientName(),
-                    ingredient.getIngredientAmount(),
-                    ingredient.getIngredientUnit()
-            );
-            if (!updateIngredientResult) {
-                System.out.println("Failed to insert ingredient: " + ingredient);
-                return false;
+                // 新增ingredient
+                boolean insertIngredientResult = ingredientDAO.addIngredient(
+                        recipe.getRecipeId(),
+                        ingredient.getIngredientName(),
+                        ingredient.getIngredientAmount(),
+                        ingredient.getIngredientUnit());
+                if (!insertIngredientResult) {
+                    System.out.println("Failed to insert ingredient: " + ingredient);
+                    return false;
+                }
+            } else {
+                boolean updateIngredientResult = ingredientDAO.updateIngredient(
+                        ingredient.getPairId(),
+                        recipe.getRecipeId(),
+                        ingredient.getIngredientName(),
+                        ingredient.getIngredientAmount(),
+                        ingredient.getIngredientUnit()
+                );
+                if (!updateIngredientResult) {
+                    System.out.println("Failed to update ingredient: " + ingredient);
+                    return false;
+                }
             }
         }
 

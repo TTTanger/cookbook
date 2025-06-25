@@ -9,12 +9,15 @@ import g.model.Ingredient;
 import g.model.Recipe;
 import g.service.RecipeService;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class UpdateViewController {
 
@@ -34,11 +37,12 @@ public class UpdateViewController {
     @FXML
     private TextArea instructionField;
     @FXML
-    private VBox ingredientContainer; 
+    private VBox ingredientContainer;
     @FXML
     private Button submitButton;
     @FXML
     private Button uploadButton;
+    private final List<Integer> deletedPairIds = new ArrayList<>();
 
     public UpdateViewController() {
         this.recipeService = new RecipeService();
@@ -65,24 +69,37 @@ public class UpdateViewController {
         this.serveField.setText(String.valueOf(serve));
 
         if (ingredients == null || ingredients.isEmpty()) {
-            addIngredient(); // 没有已有数据时才添加空行
+            addIngredient();
         } else {
             for (Ingredient ingredient : ingredients) {
                 HBox entry = new HBox(10);
+                entry.setUserData(ingredient.getPairId());
+                System.out.println("Pair ID: " + ingredient.getPairId());
+
                 TextField nameField = new TextField(ingredient.getIngredientName());
                 nameField.setPromptText("Name");
 
                 TextField quantityField = new TextField(String.valueOf(ingredient.getIngredientAmount()));
                 quantityField.setPromptText("Amount");
 
-                TextField unitField = new TextField(ingredient.getUnit());
+                TextField unitField = new TextField(ingredient.getIngredientUnit());
                 unitField.setPromptText("Unit");
 
                 Button addButton = new Button("+");
                 addButton.setOnAction(e -> addIngredient());
 
                 Button removeBtn = new Button("-");
-                removeBtn.setOnAction(e -> ingredientContainer.getChildren().remove(entry));
+                removeBtn.setOnAction(e -> {
+                    if (ingredientContainer.getChildren().size() > 1) {
+                        Integer ingId = (Integer) entry.getUserData();
+                        if (ingId != null) {
+                            deletedPairIds.add(ingId);
+                            System.out.println("Deleted ingredient ID: " + ingId);
+                        }
+                        ingredientContainer.getChildren().remove(entry);
+                        updateRemoveButtons();
+                    }
+                });
 
                 entry.getChildren().addAll(nameField, new Label(":"), quantityField, unitField, removeBtn, addButton);
                 ingredientContainer.getChildren().add(entry);
@@ -116,8 +133,13 @@ public class UpdateViewController {
         Button removeBtn = new Button("-");
         removeBtn.setOnAction(e -> {
             if (ingredientContainer.getChildren().size() > 1) {
+                Integer ingId = (Integer) entry.getUserData();
+                if (ingId != null) {
+                    deletedPairIds.add(ingId);
+                    System.out.println("Deleted ingredient ID: " + ingId);
+                }
                 ingredientContainer.getChildren().remove(entry);
-                updateRemoveButtons(); // 每次删除后更新减号按钮状态
+                updateRemoveButtons();
             }
         });
 
@@ -156,16 +178,29 @@ public class UpdateViewController {
                 previousRecipe.getInstruction(),
                 previousRecipe.getImgAddr()
         );
+        System.out.println("Previous data ingredients:" + previousData.getIngredients());
     }
 
     public void handleUpdateRecipe() {
+        // 弹出确认对话框
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("确认更新");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("确定要保存对菜谱的修改吗？");
+        var result = confirmAlert.showAndWait();
+        if (result.isEmpty() || result.get() != ButtonType.OK) {
+            return; // 用户取消
+        }
+
         String title = titleField.getText();
         String prepTime = prepTimeField.getText();
         String cookTime = cookTimeField.getText();
         String serve = serveField.getText();
         String instruction = instructionField.getText();
-        String imgAddr = "https://i.imgur.com/3dVB5B9.jpg"; 
+        String imgAddr = "https://i.imgur.com/3dVB5B9.jpg";
+
         Recipe recipe = new Recipe();
+        recipe.setRecipeId(previousData.getRecipe().getRecipeId());
         recipe.setTitle(title);
         recipe.setPrepTime(Integer.parseInt(prepTime));
         recipe.setCookTime(Integer.parseInt(cookTime));
@@ -186,10 +221,10 @@ public class UpdateViewController {
                 for (javafx.scene.Node child : fields) {
                     if (child instanceof TextField tf) {
                         if (fieldCount == 0) {
-                            nameField = tf; 
-                        }else if (fieldCount == 1) {
-                            quantityField = tf; 
-                        }else if (fieldCount == 2) {
+                            nameField = tf;
+                        } else if (fieldCount == 1) {
+                            quantityField = tf;
+                        } else if (fieldCount == 2) {
                             unitField = tf;
                         }
                         fieldCount++;
@@ -204,9 +239,14 @@ public class UpdateViewController {
                     try {
                         int quantity = Integer.parseInt(quantityStr);
                         Ingredient ing = new Ingredient();
+                        ing.setRecipeId(recipe.getRecipeId());
                         ing.setIngredientName(name);
                         ing.setIngredientAmount(quantity);
-                        ing.setUnit(unit);
+                        ing.setIngredientUnit(unit);
+                        Object pairId = hbox.getUserData();
+                        if (pairId instanceof Integer) {
+                            ing.setPairId((Integer) pairId);
+                        }
                         ingredients.add(ing);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid quantity: " + quantityStr);
@@ -214,13 +254,32 @@ public class UpdateViewController {
                 }
             }
         }
-        RecipeDetailRequest request = new RecipeDetailRequest(recipe, ingredients);
+
+        RecipeDetailRequest request = new RecipeDetailRequest(recipe, ingredients, deletedPairIds);
         boolean success = recipeService.updateRecipe(request);
         if (success) {
-            System.out.println("Recipe updated successfully!");
-            // Optionally, you can close the window or reset the form
-        } else {
-            System.out.println("UpdateView Failed to update recipe!");
+            Alert info = new Alert(Alert.AlertType.INFORMATION, "菜谱更新成功！", ButtonType.OK);
+            info.showAndWait();
+
+            // ✅ 通知 DetailCardController 刷新数据
+            if (updateCallback != null) {
+                updateCallback.onUpdateSuccess();
+            }
+
+            // 然后再关闭窗口
+            Stage stage = (Stage) submitButton.getScene().getWindow();
+            stage.close();
         }
+    }
+
+    // Set callback
+    public interface UpdateCallback {
+
+        void onUpdateSuccess();
+    }
+    private UpdateCallback updateCallback;
+
+    public void setUpdateCallback(UpdateCallback callback) {
+        this.updateCallback = callback;
     }
 }
