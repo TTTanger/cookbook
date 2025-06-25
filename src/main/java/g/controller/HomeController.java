@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import g.service.RecipeService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class HomeController implements Initializable {
+
+    private RecipeService recipeService;
 
     @FXML
     private ListViewController listViewController;
@@ -25,24 +28,29 @@ public class HomeController implements Initializable {
     @FXML
     private SearchBarController searchBarController;
 
+    public HomeController() {
+        this.recipeService = new RecipeService();
+    }
 
+    // Initiate
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        listViewController.setOnRecipeSelected(recipeDetailCardController::renderRecipeData);
-        recipeDetailCardController.setCallback(new RecipeDetailCardController.ActionCallback() {
+        listViewController.setCallback(recipeId -> {
+            recipeDetailCardController.loadRecipeData(recipeId);
+        });
+        recipeDetailCardController.setCallback(new RecipeDetailCardController.DetailCallback() {
             @Override
             public void onRecipeDeleted(int recipeId) {
                 listViewController.refreshList();
             }
 
             @Override
-            public void onRecipeUpdate(int recipeId) {
-                listViewController.refreshList();
+            public void onRecipeUpdated(int recipeId) {
+                listViewController.refreshListAndRetainSelection(recipeId); 
             }
 
             @Override
             public void onBack() {
-                // 回到上一页
                 System.out.println("Back button clicked, returning to list view.");
             }
         });

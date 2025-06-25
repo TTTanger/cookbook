@@ -31,8 +31,8 @@ public class CategoryViewController implements Initializable {
         });
 
         // 监听中间食谱点击
-        listViewController.setOnRecipeSelected(recipeSummary -> {
-            recipeDetailCardController.renderRecipeData(recipeSummary);
+        listViewController.setCallback(recipeId -> {
+            recipeDetailCardController.loadRecipeData(recipeId);
         });
     }
 

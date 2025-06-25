@@ -11,6 +11,10 @@ public class RecipeDetailRequest {
     private List<Ingredient> ingredients;
     private List<Integer> deleteIds;
 
+    public RecipeDetailRequest() {
+        
+    }
+
     public RecipeDetailRequest(Recipe recipe, List<Ingredient> ingredients,List<Integer> deleteIds) {
         this.recipe = recipe;
         this.ingredients = ingredients;

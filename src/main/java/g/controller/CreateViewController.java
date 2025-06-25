@@ -90,7 +90,7 @@ public class CreateViewController {
                         Ingredient ing = new Ingredient();
                         ing.setIngredientName(name);
                         ing.setIngredientAmount(quantity);
-                        ing.setUnit(unit);
+                        ing.setIngredientUnit(unit);
                         ingredients.add(ing);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid quantity: " + quantityStr);
@@ -108,7 +108,10 @@ public class CreateViewController {
         recipe.setImgAddr(imgAddr);
 
         System.out.println("Creating recipe with title: " + title);
-        RecipeDetailRequest request = new RecipeDetailRequest(recipe, ingredients);
+        RecipeDetailRequest request = new RecipeDetailRequest();
+
+        request.setRecipe(recipe);
+        request.setIngredients(ingredients);
 
         boolean success = recipeService.createRecipe(request);
         if (success) {
@@ -148,7 +151,7 @@ public class CreateViewController {
         removeBtn.setOnAction(e -> {
             if (ingredientContainer.getChildren().size() > 1) {
                 ingredientContainer.getChildren().remove(entry);
-                updateRemoveButtons(); // 每次删除后更新减号按钮状态
+                updateRemoveButtons(); 
             }
         });
 

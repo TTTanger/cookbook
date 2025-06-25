@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import g.dto.RecipeDetailResponse;
-import g.dto.RecipeSummaryResponse;
 import g.model.Ingredient;
 import g.model.Recipe;
 import g.service.RecipeService;
@@ -17,7 +16,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
@@ -25,21 +23,18 @@ import javafx.stage.Stage;
 public class RecipeDetailCardController implements Initializable {
 
     private final RecipeService recipeService;
+    private RecipeDetailResponse recipeDetailResponse;
+    private int recipeId;
 
     public RecipeDetailCardController() {
         // JavaFX requires a no-arg constructor
         this.recipeService = new RecipeService();
+        this.recipeDetailResponse = null;
     }
     @FXML
     private UpdateViewController updateViewController;
     @FXML
-    private Button recipeUpdateButton;
-    @FXML
-    private Button recipeDeleteButton;
-    @FXML
-    private Button recipeCategorizeButton;
-    @FXML
-    private Label recipeId;
+    private Label recipeIdLabel;
     @FXML
     private Label title;
     @FXML
@@ -57,43 +52,34 @@ public class RecipeDetailCardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
         // Initialize the controller
         System.out.println("RecipeDetailCardController initialized");
     }
 
     @FXML
-    public void loadRecipeData(int recipeId, String title, int prepTime, int cookTime, int serve,
-            List<Ingredient> ingredients, String instructions,
-            String imgAddr) {
-        this.recipeId.setText(String.valueOf(recipeId));
-        this.title.setText(title);
-        this.prepTime.setText(String.valueOf(prepTime));
-        this.cookTime.setText(String.valueOf(cookTime));
-        this.serve.setText(String.valueOf(serve));
-        this.ingredients.setText(ingredients.toString());
-        this.instructions.setText(instructions);
-        this.imgAddr.setText(imgAddr);
-    }
+    public void loadRecipeData(int recipeId) {
 
-    @FXML
-    public void renderRecipeData(RecipeSummaryResponse recipeResponse) {
-        int recipeId = recipeResponse.getRecipeId();
+        this.recipeId = recipeId;
         RecipeDetailResponse recipeDetail = recipeService.getRecipeById(recipeId);
-        
+
         Recipe recipe = recipeDetail.getRecipe();
         List<Ingredient> ingredients = recipeDetail.getIngredients();
-        loadRecipeData(
-                recipe.getRecipeId(),
-                recipe.getTitle(),
-                recipe.getPrepTime(),
-                recipe.getCookTime(),
-                recipe.getServe(),
-                ingredients,
-                recipe.getInstruction(),
-                recipe.getImgAddr()
-        );
-    }
 
+        if (ingredients != null) {
+            for (Ingredient ing : ingredients) {
+                ing.setRecipeId(recipe.getRecipeId());
+            }
+        }
+        this.recipeIdLabel.setText(String.valueOf(recipeId));
+        this.title.setText(recipe.getTitle());
+        this.prepTime.setText(String.valueOf(recipe.getPrepTime()));
+        this.cookTime.setText(String.valueOf(recipe.getCookTime()));
+        this.serve.setText(String.valueOf(recipe.getServe()));
+        this.ingredients.setText(ingredients.toString());
+        this.instructions.setText(recipe.getInstruction());
+        this.imgAddr.setText(recipe.getImgAddr());
+    }
     @FXML
     public void onRecipeDeleteClicked(ActionEvent event) {
         // 弹出确认对话框
@@ -104,12 +90,12 @@ public class RecipeDetailCardController implements Initializable {
 
         alert.showAndWait().ifPresent(result -> {
             if (result == ButtonType.OK) {
-                int id = Integer.parseInt(recipeId.getText());
-                recipeService.deleteRecipe(id);
-                System.out.println("Recipe with ID " + id + " deleted successfully.");
+
+                recipeService.deleteRecipe(recipeId);
+                System.out.println("Recipe with ID " + recipeId + " deleted successfully.");
 
                 if (callback != null) {
-                    callback.onRecipeDeleted(id); 
+                    callback.onRecipeDeleted(recipeId);
                 }
             }
         });
@@ -117,49 +103,47 @@ public class RecipeDetailCardController implements Initializable {
 
     @FXML
     public void onRecipeUpdateClicked(ActionEvent event) {
-        System.out.println("Recipe update button clicked");
-        int id = Integer.parseInt(recipeId.getText());
-        System.out.println("Recipe ID to update: " + id);
-        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/g/UpdateView.fxml"));
             Parent root = loader.load();
-            updateViewController = loader.getController();
-            // 设置 UpdateViewController 的 previousData
-            RecipeDetailResponse recipeDetail = recipeService.getRecipeById(id);
+            this.updateViewController = loader.getController();
+
+            // 设置数据
+            RecipeDetailResponse recipeDetail = recipeService.getRecipeById(recipeId);
             updateViewController.setPreviousData(recipeDetail);
+            updateViewController.setUpdateCallback(() -> {
+            loadRecipeData(recipeId); // ✅ 局部刷新
+
+            if (callback != null) {
+                callback.onRecipeUpdated(recipeId); // ✅ 通知爷爷 HomeController 刷新列表
+            }
+        });
 
             Stage stage = new Stage();
-            stage.setTitle("Create Recipe");
+            stage.setTitle("Update Recipe");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("无法加载 UpdateView.fxml 页面");
         }
-
-        
-
-        if (callback != null) {
-            callback.onRecipeUpdate(id);  
-        }
     }
 
     @FXML
     public void onBackClicked(ActionEvent event) {
         if (callback != null) {
-            callback.onBack();  // 通知父组件
+            callback.onBack();  
         }
     }
 
     @FXML
     public void onRecipeCategorizeClicked(ActionEvent event) {
-        System.out.println("Recipe categorize button clicked for recipe ID: " + recipeId.getText());
+        System.out.println("Recipe categorize button clicked for recipe ID: " + recipeId);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/g/AddRecipeToCategory.fxml"));
             Parent root = loader.load();
             AddRecipeToCategoryController controller = loader.getController();
-            controller.setRecipeId(Integer.parseInt(recipeId.getText()));
+            controller.setRecipeId(recipeId);
 
             Stage stage = new Stage();
             stage.setTitle("Add Recipe to Category");
@@ -171,21 +155,20 @@ public class RecipeDetailCardController implements Initializable {
         }
     }
 
-    
-
     // Callback interface for actions
-    public interface ActionCallback {
+    public interface DetailCallback {
 
         void onRecipeDeleted(int recipeId);
 
-        void onRecipeUpdate(int recipeId);
+        void onRecipeUpdated(int recipeId);
 
         void onBack();
     }
 
-    private ActionCallback callback;
+    private DetailCallback callback;
 
-    public void setCallback(ActionCallback callback) {
+    public void setCallback(DetailCallback callback) {
+        
         this.callback = callback;
     }
 

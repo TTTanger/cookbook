@@ -28,7 +28,7 @@
                         <HBox spacing="10.0">
                             <children>
                                 <Label text="Recipe ID:"/>
-                                <Label fx:id="recipeId" text="0"/>
+                                <Label fx:id="recipeIdLabel" text="0"/>
                             </children>
                         </HBox>
 
