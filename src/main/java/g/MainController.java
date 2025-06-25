@@ -1,13 +1,28 @@
 package g;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 
 public class MainController {
+    @FXML private StackPane contentPane;
+    @FXML private Node homePage;
+    @FXML private Node categoryPage;
 
     @FXML
-    public void goToMain() throws IOException {
-        App.setRoot("Main");
+    public void initialize() {
+        showHome(); // 默认显示Home
+    }
+
+    @FXML
+    private void showHome() {
+        homePage.setVisible(true);
+        categoryPage.setVisible(false);
+    }
+
+    @FXML
+    private void showCategory() {
+        homePage.setVisible(false);
+        categoryPage.setVisible(true);
     }
 }

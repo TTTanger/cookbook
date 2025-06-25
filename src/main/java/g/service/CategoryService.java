@@ -23,40 +23,51 @@ public class CategoryService {
         categoryRecipeDAO = new CategoryRecipeDAO();
     }
 
-    public boolean addRecipeToCategory(List<Integer> categoryIds, int recipeId) {
-        boolean ifAdd = categoryRecipeDAO.addToCategory(categoryIds, recipeId);
-        if (ifAdd) {
-            System.out.println("Recipe added to all categories.");
-            return true;
-        } else {
-            System.out.println("Failed to add recipe to categories.");
-            return false;
-        }
-    }
+    // public boolean addRecipeToCategory(List<Integer> categoryIds, int recipeId) {
+    //     boolean ifAdd = categoryRecipeDAO.addToCategory(categoryIds, recipeId);
+    //     if (ifAdd) {
+    //         System.out.println("Recipe added to all categories.");
+    //         return true;
+    //     } else {
+    //         System.out.println("Failed to add recipe to categories.");
+    //         return false;
+    //     }
+    // }
 
     public boolean updateRecipeToCategory(List<Integer> categoryIds, int recipeId) {
-        
-        boolean ifClear = categoryRecipeDAO.clearCategoriesForRecipe(recipeId);
+        // 先查一下当前有哪些分类
+        List<Integer> currentCategoryIds = categoryRecipeDAO.getCategoryIdsByRecipeId(recipeId);
 
-        if (!ifClear) {
-            System.out.println("Failed to clear old category relations.");
-            return false;
-        }
-
-        if (categoryIds == null || categoryIds.isEmpty()) {
-            System.out.println("No new categories provided. Only cleared existing categories.");
-            return true; 
-        }
-
-        boolean ifAdd = categoryRecipeDAO.addToCategory(categoryIds, recipeId);
-
-        if (ifAdd) {
-            System.out.println("Successfully updated categories for recipe.");
+        // 如果当前本来就没有分类且也不需要添加，直接返回true
+        if ((currentCategoryIds == null || currentCategoryIds.isEmpty()) && (categoryIds == null || categoryIds.isEmpty())) {
+            System.out.println("No categories to update for recipe " + recipeId);
             return true;
-        } else {
-            System.out.println("Failed to add new categories for recipe.");
-            return false;
         }
+
+        // 只有当前有分类时才清空
+        boolean ifClear = true;
+        if (currentCategoryIds != null && !currentCategoryIds.isEmpty()) {
+            ifClear = categoryRecipeDAO.clearCategoriesForRecipe(recipeId);
+            if (!ifClear) {
+                System.out.println("Failed to clear old category relations.");
+                return false;
+            }
+        }
+
+        // 需要添加新分类时才添加
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            boolean ifAdd = categoryRecipeDAO.addToCategory(categoryIds, recipeId);
+            if (ifAdd) {
+                System.out.println("Recipe added to all categories.");
+                return true;
+            } else {
+                System.out.println("Failed to add recipe to categories.");
+                return false;
+            }
+        }
+
+        // 如果只是清空分类，也算成功
+        return ifClear;
     }
 
     public boolean createCategory(String categoryName) {

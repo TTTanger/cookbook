@@ -108,20 +108,20 @@ public class RecipeDetailCardController implements Initializable {
             Parent root = loader.load();
             this.updateViewController = loader.getController();
 
-            // 设置数据
             RecipeDetailResponse recipeDetail = recipeService.getRecipeById(recipeId);
             updateViewController.setPreviousData(recipeDetail);
             updateViewController.setUpdateCallback(() -> {
-            loadRecipeData(recipeId); // ✅ 局部刷新
+            loadRecipeData(recipeId); 
 
             if (callback != null) {
-                callback.onRecipeUpdated(recipeId); // ✅ 通知爷爷 HomeController 刷新列表
+                callback.onRecipeUpdated(recipeId); 
             }
         });
 
             Stage stage = new Stage();
             stage.setTitle("Update Recipe");
             stage.setScene(new Scene(root));
+            
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,6 +148,7 @@ public class RecipeDetailCardController implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Add Recipe to Category");
             stage.setScene(new Scene(root));
+            
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
