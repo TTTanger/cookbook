@@ -23,26 +23,43 @@ public class AddRecipeToCategoryController implements Initializable {
     private final CategoryService categoryService = new CategoryService();
 
     private int recipeId = -1; // 当前操作的食谱ID
+    private List<CategoryResponse> originalCategories = List.of(); // 记录初始已选分类
 
-    // 初始化时动态加载所有分类
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<CategoryResponse> categories = categoryService.getAllCategories();
-        for (CategoryResponse category : categories) {
-            CheckBox checkBox = new CheckBox(category.getCategoryName());
-            checkBox.setUserData(category.getCategoryId());
-            categoryCheckBoxContainer.getChildren().add(checkBox);
-        }
+        // 分类加载延后到 setRecipeId
     }
 
     // 设置当前操作的食谱ID（外部打开窗口时调用）
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
         System.out.println("设置当前操作的食谱ID: " + recipeId);
+
+        // 1. 查询所有分类
+        List<CategoryResponse> categories = categoryService.getAllCategories();
+        // 2. 查询该食谱已属于哪些分类
+        originalCategories = categoryService.getCategoriesByRecipeId(recipeId);
+
+        // 提取已选分类的id集合
+        List<Integer> originalCategoryIds = originalCategories.stream()
+                .map(CategoryResponse::getCategoryId)
+                .collect(Collectors.toList());
+
+        categoryCheckBoxContainer.getChildren().clear();
+        for (CategoryResponse category : categories) {
+            CheckBox checkBox = new CheckBox(category.getCategoryName());
+            checkBox.setUserData(category.getCategoryId());
+            // 如果已属于该分类，则勾选
+            if (originalCategoryIds.contains(category.getCategoryId())) {
+                checkBox.setSelected(true);
+            }
+            categoryCheckBoxContainer.getChildren().add(checkBox);
+        }
     }
 
     @FXML
     private void onConfirm() {
+        // 当前勾选的分类id
         List<Integer> selectedCategoryIds = categoryCheckBoxContainer.getChildren().stream()
                 .filter(node -> node instanceof CheckBox cb && cb.isSelected())
                 .map(node -> (Integer) ((CheckBox) node).getUserData())
@@ -52,17 +69,33 @@ public class AddRecipeToCategoryController implements Initializable {
             showAlert("错误", "未指定食谱ID！");
             return;
         }
-        if (selectedCategoryIds.isEmpty()) {
-            showAlert("提示", "请至少选择一个分类！");
-            return;
+
+        // 原始已选分类id
+        List<Integer> originalCategoryIds = originalCategories.stream()
+                .map(CategoryResponse::getCategoryId)
+                .collect(Collectors.toList());
+
+        // 计算新增和取消的分类
+        List<Integer> toAdd = selectedCategoryIds.stream()
+                .filter(id -> !originalCategoryIds.contains(id))
+                .collect(Collectors.toList());
+        List<Integer> toRemove = originalCategoryIds.stream()
+                .filter(id -> !selectedCategoryIds.contains(id))
+                .collect(Collectors.toList());
+
+        boolean success = true;
+        if (!toAdd.isEmpty()) {
+            success &= categoryService.addRecipeToCategory(toAdd, recipeId);
+        }
+        if (!toRemove.isEmpty()) {
+            success &= categoryService.updateRecipeToCategory(toRemove, recipeId);
         }
 
-        boolean success = categoryService.addRecipeToCategory(selectedCategoryIds, recipeId);
         if (success) {
-            showAlert("成功", "已成功添加到分类！");
+            showAlert("成功", "分类已更新！");
             closeWindow();
         } else {
-            showAlert("失败", "添加到分类失败！");
+            showAlert("失败", "更新分类失败！");
         }
     }
 
