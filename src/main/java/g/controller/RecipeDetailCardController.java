@@ -5,10 +5,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import g.dto.CalculateResponse;
 import g.dto.RecipeDetailResponse;
 import g.model.Ingredient;
 import g.model.Recipe;
+import g.service.CalculateService;
 import g.service.RecipeService;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,17 +21,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 public class RecipeDetailCardController implements Initializable {
 
     private final RecipeService recipeService;
+    private final CalculateService calculateService;
     private RecipeDetailResponse recipeDetailResponse;
     private int recipeId;
 
     public RecipeDetailCardController() {
         // JavaFX requires a no-arg constructor
         this.recipeService = new RecipeService();
+        this.calculateService = new CalculateService();
         this.recipeDetailResponse = null;
     }
     @FXML
@@ -42,19 +53,37 @@ public class RecipeDetailCardController implements Initializable {
     @FXML
     private Label cookTime;
     @FXML
-    private Label serve;
-    @FXML
-    private Label ingredients;
+    private TextArea ingredients; 
     @FXML
     private Label instructions;
     @FXML
     private Label imgAddr;
+    @FXML
+    private Spinner<Integer> serveSpinner;
+
+    @FXML
+    private TableView<Ingredient> ingredientsTable;
+    @FXML
+    private TableColumn<Ingredient, String> ingredientNameCol;
+    @FXML
+    private TableColumn<Ingredient, Integer> ingredientAmountCol;
+    @FXML
+    private TableColumn<Ingredient, String> ingredientUnitCol;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         
         // Initialize the controller
         System.out.println("RecipeDetailCardController initialized");
+        if (ingredientNameCol != null) {
+            ingredientNameCol.setCellValueFactory(new PropertyValueFactory<>("ingredientName"));
+        }
+        if (ingredientAmountCol != null) {
+            ingredientAmountCol.setCellValueFactory(new PropertyValueFactory<>("ingredientAmount"));
+        }
+        if (ingredientUnitCol != null) {
+            ingredientUnitCol.setCellValueFactory(new PropertyValueFactory<>("ingredientUnit"));
+        }
     }
 
     @FXML
@@ -64,10 +93,10 @@ public class RecipeDetailCardController implements Initializable {
         RecipeDetailResponse recipeDetail = recipeService.getRecipeById(recipeId);
 
         Recipe recipe = recipeDetail.getRecipe();
-        List<Ingredient> ingredients = recipeDetail.getIngredients();
+        List<Ingredient> ingredientsList = recipeDetail.getIngredients();
 
-        if (ingredients != null) {
-            for (Ingredient ing : ingredients) {
+        if (ingredientsList != null) {
+            for (Ingredient ing : ingredientsList) {
                 ing.setRecipeId(recipe.getRecipeId());
             }
         }
@@ -75,11 +104,26 @@ public class RecipeDetailCardController implements Initializable {
         this.title.setText(recipe.getTitle());
         this.prepTime.setText(String.valueOf(recipe.getPrepTime()));
         this.cookTime.setText(String.valueOf(recipe.getCookTime()));
-        this.serve.setText(String.valueOf(recipe.getServe()));
-        this.ingredients.setText(ingredients.toString());
+
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, recipe.getServe());
+        serveSpinner.setValueFactory(valueFactory);
+        serveSpinner.setEditable(true);
+
+        int initialServings = serveSpinner.getValue();
+        System.out.println("Initial servings: " + initialServings);
+
+        updateIngredientsDisplay(recipeId, initialServings);
+
+        serveSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            System.out.println("Servings changed from " + oldValue + " to " + newValue);
+            updateIngredientsDisplay(recipeId, newValue);
+        });
+
         this.instructions.setText(recipe.getInstruction());
+
         this.imgAddr.setText(recipe.getImgAddr());
     }
+
     @FXML
     public void onRecipeDeleteClicked(ActionEvent event) {
         // 弹出确认对话框
@@ -131,6 +175,7 @@ public class RecipeDetailCardController implements Initializable {
 
     @FXML
     public void onBackClicked(ActionEvent event) {
+        showEmptyMessage(); // 清空当前内容，显示“Please Select a Recipe”
         if (callback != null) {
             callback.onBack();  
         }
@@ -173,4 +218,23 @@ public class RecipeDetailCardController implements Initializable {
         this.callback = callback;
     }
 
+    private void updateIngredientsDisplay(int recipeId, int serve) {
+        CalculateResponse scaledIngredients = calculateService.IngredientCalculate(recipeId, serve);
+        List<Ingredient> ingredientsList = scaledIngredients.getIngredients();
+        if (ingredientsList != null && !ingredientsList.isEmpty()) {
+            ingredientsTable.setItems(FXCollections.observableArrayList(ingredientsList));
+        } else {
+            ingredientsTable.setItems(FXCollections.observableArrayList());
+        }
+    }
+    public void showEmptyMessage() {
+        this.recipeIdLabel.setText("");
+        this.title.setText("");
+        this.prepTime.setText("");
+        this.cookTime.setText("");
+        this.serveSpinner.getValueFactory().setValue(1);
+        this.ingredientsTable.setItems(FXCollections.observableArrayList());
+        this.instructions.setText("Please Select a Recipe");
+        this.imgAddr.setText("");
+    }
 }

@@ -10,9 +10,14 @@ import g.model.Ingredient;
 
 public class CalculateService {
 
-    private IngredientDAO ingredientDAO;
-    private RecipeDAO recipeDAO;
+    private final IngredientDAO ingredientDAO;
+    private final RecipeDAO recipeDAO;
         
+    public CalculateService() {
+        this.ingredientDAO = new IngredientDAO();
+        this.recipeDAO = new RecipeDAO();
+    }
+
     public CalculateResponse IngredientCalculate(int recipeId, int serve) {
        
         CalculateResponse response = new CalculateResponse();
@@ -31,7 +36,7 @@ public class CalculateService {
             result.setPairId(ingredient.getPairId());
             result.setRecipeId(ingredient.getRecipeId());
             result.setIngredientName(ingredient.getIngredientName());
-            result.setIngredientAmount((int) Math.round(ingredient.getIngredientAmount() * scaleFactor));
+            result.setIngredientAmount((int) Math.ceil(ingredient.getIngredientAmount() * scaleFactor));
             result.setIngredientUnit(ingredient.getIngredientUnit());
             scaledIngredients.add(result);
         }
@@ -40,5 +45,4 @@ public class CalculateService {
 
         return response;
     }
-
 }

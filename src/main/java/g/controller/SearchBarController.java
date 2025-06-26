@@ -28,6 +28,11 @@ public class SearchBarController {
         }
     }
 
+    @FXML
+    public void clearSearch(ActionEvent event) {
+        searchField.clear();
+    }
+
     // 回调接口
     public interface ActionCallback {
 

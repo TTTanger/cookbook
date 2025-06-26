@@ -10,6 +10,7 @@
       style="-fx-padding: 10 16; -fx-background-color: #f8f9fa; -fx-background-radius: 8;">
     <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS"
                style="-fx-background-radius: 8; -fx-font-size: 14px;"/>
+    <Button fx:id="clearButton" onAction="#clearSearch" text="✕" />
     <Button fx:id="searchButton" onAction="#performSearch" text="🔍"
             style="-fx-background-radius: 8; -fx-background-color: #228be6; -fx-text-fill: white;"/>
 </HBox>
