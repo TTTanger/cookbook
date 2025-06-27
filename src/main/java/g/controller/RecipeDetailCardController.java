@@ -66,7 +66,7 @@ public class RecipeDetailCardController implements Initializable {
     private TextArea ingredients;
     /** Label for instructions */
     @FXML
-    private Label instructions;
+    private TextArea instructions;
     /** Spinner for servings */
     @FXML
     private Spinner<Integer> serveSpinner;

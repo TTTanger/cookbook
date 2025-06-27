@@ -11,7 +11,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        showHome(); // 默认显示Home
+        showHome(); 
     }
 
     @FXML
