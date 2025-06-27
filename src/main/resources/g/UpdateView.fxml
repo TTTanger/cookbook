@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:controller="g.controller.UpdateViewController"
@@ -23,11 +24,16 @@
          <children>
             <VBox spacing="16.0" alignment="CENTER" prefWidth="200.0" maxWidth="220.0">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Please upload your image "
+                  <Label alignment="CENTER" contentDisplay="CENTER" text="Please upload your image"
                      style="-fx-font-size: 14px; -fx-text-fill: #495057;"/>
-                  <ImageView fx:id="productImageView" fitHeight="130.0" fitWidth="158.0"
-                     opacity="0.43" pickOnBounds="true"
-                     style="-fx-background-radius: 12;"/>
+                  <StackPane prefWidth="158" prefHeight="130"
+                     style="-fx-background-color: #f1f3f5; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, #b0b0b0, 6, 0.1, 0, 1);">
+                     <children>
+                        <ImageView fx:id="imgPreview" fitHeight="120.0" fitWidth="148.0"
+                           style="-fx-background-radius: 12;" preserveRatio="true"/>
+                        <Label fx:id="imgHint" text="No image" style="-fx-text-fill: #adb5bd; -fx-font-size: 13px;"/>
+                     </children>
+                  </StackPane>
                   <Button fx:id="uploadButton" mnemonicParsing="false" onAction="#uploadClicked"
                      text="Upload"
                      style="-fx-background-radius: 8; -fx-background-color: #228be6; -fx-text-fill: white;"/>

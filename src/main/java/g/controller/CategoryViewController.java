@@ -7,66 +7,132 @@ import g.service.CategoryService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 
+/**
+ * Controller for the category view. Handles the display and interaction of categories and recipes.
+ *
+ * @author Junzhe Luo
+ */
 public class CategoryViewController implements Initializable {
 
+    /** VBox for the left pane (category list) */
     @FXML
     private VBox leftPane;
+    /** VBox for the right pane (recipe detail) */
     @FXML
     private VBox rightPane;
 
-    // 通过fx:id获取include的controller
+    // Controllers for included FXML components
+    /** Controller for the category list */
     @FXML
     private CategoryListController categoryListController;
+    /** Controller for the recipe list */
     @FXML
     private ListViewController listViewController;
+    /** Controller for the recipe detail card */
     @FXML
     private RecipeDetailCardController recipeDetailCardController;
+    /** Controller for the search bar */
+    @FXML
+    private SearchBarController searchBarController;
+    /** Label for empty category message */
+    @FXML
+    private Label categoryEmptyLabel;
 
-    public CategoryViewController() {
-        CategoryService categoryService = new CategoryService();
-    }
-    
+    /** The currently selected category ID, -1 means none selected */
+    private int currentCategoryId = -1;
 
+    /**
+     * Initializes the controller and sets up callbacks for category and recipe selection.
+     * @param location The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 监听左侧分类点击
+        // Listen for category selection on the left
         categoryListController.setOnItemSelected(category -> {
-            // 加载该分类下的所有食谱
-            listViewController.loadRecipesByCategory(category.getCategoryId());
+            if (category != null) {
+                currentCategoryId = category.getCategoryId();
+                listViewController.loadRecipesByCategory(currentCategoryId);
+                recipeDetailCardController.showEmptyMessage(); // Clear right detail when switching category
+                // Show list, hide empty message
+                categoryEmptyLabel.setVisible(false);
+                categoryEmptyLabel.setManaged(false);
+                listViewController.setListViewVisible(true);
+            } else {
+                currentCategoryId = -1;
+                listViewController.clearList(); // Clear middle list when no category selected
+                recipeDetailCardController.showEmptyMessage();
+                // Show empty message, hide list
+                categoryEmptyLabel.setVisible(true);
+                categoryEmptyLabel.setManaged(true);
+                listViewController.setListViewVisible(false);
+            }
         });
 
-        // 监听中间食谱点击
+        // Listen for recipe selection in the middle
         listViewController.setCallback(recipeId -> {
-            recipeDetailCardController.loadRecipeData(recipeId);
+            if (recipeId != -1) {
+                recipeDetailCardController.loadRecipeData(recipeId);
+            } else {
+                recipeDetailCardController.showEmptyMessage(); // Show prompt when no recipe selected
+            }
         });
+
+        // Search bar callback: combine with current category
+        searchBarController.setCallback(keyword -> {
+            if (currentCategoryId > 0) {
+                listViewController.searchInCategory(currentCategoryId, keyword);
+            } else {
+                listViewController.clearList(); // Clear if no category selected
+            }
+            recipeDetailCardController.showEmptyMessage();
+        });
+
+        // Clear on initialization
+        listViewController.clearList();
+        recipeDetailCardController.showEmptyMessage();
+        // Default: show empty message, hide list
+        categoryEmptyLabel.setVisible(true);
+        categoryEmptyLabel.setManaged(true);
+        listViewController.setListViewVisible(false);
     }
 
-    // 可选：创建分类按钮事件
+    /**
+     * Handles the create category button click event.
+     */
     @FXML
     public void onCreateClicked() {
         javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
-        dialog.setTitle("创建新分类");
+        dialog.setTitle("Create New Category");
         dialog.setHeaderText(null);
-        dialog.setContentText("请输入分类名称：");
+        dialog.setContentText("Please enter the category name:");
 
         dialog.showAndWait().ifPresent(name -> {
             if (name != null && !name.trim().isEmpty()) {
                 boolean success = new CategoryService().createCategory(name.trim());
                 if (success) {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION, "分类创建成功！");
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION, "Category created successfully!");
                     alert.showAndWait();
-                    // 可选：刷新分类列表
+                    // Optionally refresh category list
                     categoryListController.refreshList();
                 } else {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "分类创建失败！");
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "Failed to create category!");
                     alert.showAndWait();
                 }
             } else {
-                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "分类名称不能为空！");
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING, "Category name cannot be empty!");
                 alert.showAndWait();
             }
         });
     }
 
+    /**
+     * Refreshes the recipe list in the current category.
+     */
+    @FXML
+    public void refreshList() {
+        listViewController.refreshListInCategory(currentCategoryId);
+    }
 }

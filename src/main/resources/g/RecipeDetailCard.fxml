@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1"
     xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="g.controller.RecipeDetailCardController"
     maxWidth="Infinity" maxHeight="Infinity"
     spacing="0"
-    style="-fx-background-color: #f8f9fa; -fx-padding: 0;">
-    <StackPane
-        style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(gaussian, #b0b0b0, 12, 0.2, 0, 2); -fx-padding: 0 0 16 0; -fx-max-width: 320;">
-        <VBox spacing="0" style="-fx-background-radius: 16;">
+    style="-fx-background-color: #f8f9fa; -fx-padding: 0; -fx-background-radius: 16;">
+    <Label fx:id="emptyRecipeLabel" text="Select a Recipe" style="-fx-font-size: 18px; -fx-text-fill: #adb5bd; -fx-alignment: center;" visible="true" managed="true" />
+    <VBox fx:id="detailContentBox" visible="false" managed="false">
+        <VBox spacing="0" style="-fx-background-radius: 16; -fx-padding: 0 0 16 0;">
             <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 16 16 8 16;">
                 <Button fx:id="recipeBackButton" text="←" onAction="#onBackClicked"
                     style="-fx-background-radius: 8; -fx-background-color: #e9ecef; -fx-font-size: 16;" />
@@ -45,45 +46,37 @@
                         <RowConstraints minHeight="24" />
                     </rowConstraints>
                     <children>
-                        <Label text="ID:" style="-fx-text-fill: #868e96;" />
-                        <Label fx:id="recipeIdLabel" GridPane.columnIndex="1"
-                            style="-fx-font-weight: bold;" />
-                        <Label text="Title:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="1" />
-                        <Label fx:id="title" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Prep Time:" style="-fx-text-fill: #868e96;"
-                            GridPane.rowIndex="2" />
-                        <Label fx:id="prepTime" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="Cook Time:" style="-fx-text-fill: #868e96;"
-                            GridPane.rowIndex="3" />
-                        <Label fx:id="cookTime" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label text="Servings:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="4" />
-                        <Spinner fx:id="serveSpinner" GridPane.columnIndex="1" GridPane.rowIndex="4"
-                            editable="true" minWidth="80" />
-
-                        <Label text="Ingredients:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="5" />
-                        <TableView fx:id="ingredientsTable" GridPane.columnIndex="1" GridPane.rowIndex="5"
-                                   GridPane.columnSpan="2"
-                                   prefHeight="160" minWidth="200" editable="false">
+                        <Label text="Title:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="0" />
+                        <Label fx:id="title" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Label text="Prep Time:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="1" />
+                        <Label fx:id="prepTime" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Cook Time:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="2" />
+                        <Label fx:id="cookTime" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Servings:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="3" />
+                        <Spinner fx:id="serveSpinner" GridPane.columnIndex="1" GridPane.rowIndex="3" editable="true" minWidth="80" />
+                        <Label text="Ingredients:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="4" />
+                        <TableView fx:id="ingredientsTable" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                   GridPane.columnSpan="1"
+                                   prefHeight="160" minWidth="260" maxWidth="360" editable="false"
+                                   style="-fx-background-radius: 12; -fx-border-radius: 12;">
                             <columns>
-                                <TableColumn fx:id="ingredientNameCol" text="食材" prefWidth="100"/>
-                                <TableColumn fx:id="ingredientAmountCol" text="用量" prefWidth="80"/>
-                                <TableColumn fx:id="ingredientUnitCol" text="单位" prefWidth="80"/>
+                                <TableColumn fx:id="ingredientNameCol" text="Name" prefWidth="80" minWidth="80" maxWidth="120"/>
+                                <TableColumn fx:id="ingredientAmountCol" text="Amount" prefWidth="80" minWidth="80" maxWidth="120"/>
+                                <TableColumn fx:id="ingredientUnitCol" text="Unit" prefWidth="80" minWidth="80" maxWidth="120"/>
                             </columns>
                         </TableView>
-                        <Label text="Instructions:" style="-fx-text-fill: #868e96;"
-                            GridPane.rowIndex="6" />
-                        <TitledPane text="点击展开/收起" GridPane.columnIndex="1" GridPane.rowIndex="6"
+                        <Label text="Instructions:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="5" />
+                        <TitledPane text="点击展开/收起" GridPane.columnIndex="1" GridPane.rowIndex="5"
                             expanded="false">
                             <content>
                                 <Label fx:id="instructions" wrapText="true" />
                             </content>
                         </TitledPane>
-                        <Label text="Image:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="7" />
-                        <Label fx:id="imgAddr" GridPane.columnIndex="1" GridPane.rowIndex="7"
-                            wrapText="true" />
+                        <Label text="Image:" style="-fx-text-fill: #868e96;" GridPane.rowIndex="6" />
+                        <ImageView fx:id="imgView" GridPane.columnIndex="1" GridPane.rowIndex="6" fitWidth="320" fitHeight="200" preserveRatio="true" />
                     </children>
                 </GridPane>
             </VBox>
         </VBox>
-    </StackPane>
+    </VBox>
 </VBox>
