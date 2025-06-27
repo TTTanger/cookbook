@@ -13,30 +13,45 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller for the home view. Handles the main navigation and recipe management.
+ *
+ * @author Junzhe Luo
+ */
 public class HomeController implements Initializable {
 
+    /** Service for recipe operations */
     private RecipeService recipeService;
 
+    /** Controller for the recipe list view */
     @FXML
     private ListViewController listViewController;
-
+    /** Controller for the recipe detail card view */
     @FXML
     private RecipeDetailCardController recipeDetailCardController;
-
+    /** Controller for the update view */
     @FXML
     private UpdateViewController updateViewController;
-
+    /** Controller for the search bar */
     @FXML
     private SearchBarController searchBarController;
-
+    /** VBox for the empty pane (placeholder) */
     @FXML private VBox emptyPane;
+    /** Parent node for the recipe detail card */
     @FXML private Parent recipeDetailCard;
 
+    /**
+     * Constructor initializes the recipe service.
+     */
     public HomeController() {
         this.recipeService = new RecipeService();
     }
 
-    // Initiate
+    /**
+     * Initializes the controller, sets up callbacks and default view.
+     * @param location The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         listViewController.setCallback(recipeId -> {
@@ -49,12 +64,10 @@ public class HomeController implements Initializable {
                 listViewController.refreshList();
                 showEmptyPane();
             }
-
             @Override
             public void onRecipeUpdated(int recipeId) {
-                listViewController.refreshListAndRetainSelection(recipeId); 
+                listViewController.refreshListAndRetainSelection(recipeId);
             }
-
             @Override
             public void onBack() {
                 System.out.println("Back button clicked, returning to list view.");
@@ -67,9 +80,12 @@ public class HomeController implements Initializable {
                 listViewController.search(query);
             }
         });
-        showEmptyPane(); // 默认显示空白面板
+        showEmptyPane(); // Show empty pane by default
     }
 
+    /**
+     * Handles the create recipe button click event. Opens the create recipe dialog.
+     */
     @FXML
     public void onCreateClicked() {
         System.out.println("Create button clicked");
@@ -77,48 +93,52 @@ public class HomeController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/g/CreateView.fxml"));
             Parent root = loader.load();
             CreateViewController controller = loader.getController();
-
             // Callback to refresh the list view after creation
             controller.setOnCreateSuccess(() -> {
-                System.out.println("CreateView 创建成功，回调刷新 ListView！");
+                System.out.println("CreateView created successfully, refreshing ListView!");
                 listViewController.refreshList();
             });
-
             Stage stage = new Stage();
             stage.setTitle("Create Recipe");
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root, 1000, 600));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("无法加载 CreateView.fxml 页面");
+            System.err.println("Failed to load CreateView.fxml page");
         }
     }
 
-    // 当没有选中任何item时调用
+    /**
+     * Called when no recipe is selected. Shows the empty message in the detail card.
+     */
     private void onNoRecipeSelected() {
         recipeDetailCardController.showEmptyMessage();
     }
 
+    /**
+     * Refreshes the recipe list.
+     */
     public void refreshList() {
         listViewController.refreshList();
     }
-    // 显示空面板
+
+    /**
+     * Shows the empty pane and hides the recipe detail card.
+     */
     public void showEmptyPane() {
-        // 设置空面板可见
         emptyPane.setVisible(true);
-        // 设置空面板管理
         emptyPane.setManaged(true);
-        // 设置菜谱详情卡片不可见
         recipeDetailCard.setVisible(false);
-        // 设置菜谱详情卡片不管理
         recipeDetailCard.setManaged(false);
     }
 
+    /**
+     * Shows the recipe detail card and hides the empty pane.
+     */
     private void showDetailPane() {
         emptyPane.setVisible(false);
         emptyPane.setManaged(false);
         recipeDetailCard.setVisible(true);
         recipeDetailCard.setManaged(true);
     }
-
 }

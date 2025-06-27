@@ -10,10 +10,10 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="g.controller.AddRecipeToCategoryController"
       spacing="15" alignment="CENTER" style="-fx-padding: 20;">
-    <Label text="选择要添加到的分类：" style="-fx-font-size: 16px;"/>
+    <Label text="Select the category for the recipe" style="-fx-font-size: 16px;"/>
     <VBox fx:id="categoryCheckBoxContainer" spacing="8"/>
     <HBox spacing="10">
-        <Button text="确定" onAction="#onConfirm"/>
-        <Button text="取消" onAction="#onCancel"/>
+        <Button text="Confirm" onAction="#onConfirm"/>
+        <Button text="Cancel" onAction="#onCancel"/>
     </HBox>
 </VBox>

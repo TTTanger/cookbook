@@ -12,26 +12,45 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 
+/**
+ * Controller for the category list view. Handles the display and selection of categories.
+ * 
+ * @author Junzhe Luo
+ */
 public class CategoryListController implements Initializable {
 
+    /** Service for category operations */
     private final CategoryService categoryService;
 
+    /** ListView for displaying categories */
     @FXML
     private ListView<CategoryResponse> listView;
 
+    /**
+     * Constructor initializes the category service.
+     */
     public CategoryListController() {
         this.categoryService = new CategoryService();
     }
 
+    /**
+     * Fetches all categories from the service.
+     * @return List of CategoryResponse objects
+     */
     public List<CategoryResponse> fetchAllCategories() {
         System.out.println("Fetching all categories...");
         return categoryService.getAllCategories();
     }
 
+    /**
+     * Initializes the controller and sets up the ListView.
+     * @param location The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("CategoryViewController 初始化！");
-        System.out.println("ListView 元素是否为空：" + (listView == null));
+        System.out.println("CategoryListController initialized!");
+        System.out.println("ListView element is null: " + (listView == null));
 
         List<CategoryResponse> rawList = fetchAllCategories();
         ObservableList<CategoryResponse> observableList = FXCollections.observableArrayList(rawList);
@@ -57,19 +76,28 @@ public class CategoryListController implements Initializable {
         });
     }
 
+    /**
+     * Refreshes the category list in the ListView.
+     */
     public void refreshList() {
         List<CategoryResponse> rawList = fetchAllCategories();
         ObservableList<CategoryResponse> observableList = FXCollections.observableArrayList(rawList);
         listView.setItems(observableList);
-        System.out.println("Category ListView 已刷新！");
+        System.out.println("Category ListView refreshed!");
     }
 
-    // Callback for item selection
+    /**
+     * Callback interface for category selection.
+     */
     public interface CategorySelectCallback {
         void onCategorySelected(CategoryResponse item);
     }
     private CategorySelectCallback callback;
 
+    /**
+     * Sets the callback for category selection.
+     * @param callback The callback to set
+     */
     public void setOnItemSelected(CategorySelectCallback callback) {
         this.callback = callback;
     }

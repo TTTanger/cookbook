@@ -2,6 +2,12 @@ package g.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import g.dto.RecipeDetailRequest;
 import g.dto.RecipeDetailResponse;
@@ -18,6 +24,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 
 public class UpdateViewController {
 
@@ -43,6 +52,15 @@ public class UpdateViewController {
     @FXML
     private Button uploadButton;
     private final List<Integer> deletedPairIds = new ArrayList<>();
+    private String uploadedImgPath = null;
+
+    /** ImageView for previewing the uploaded image */
+    @FXML
+    private ImageView imgPreview;
+
+    /** Label for image preview hint */
+    @FXML
+    private Label imgHint;
 
     public UpdateViewController() {
         this.recipeService = new RecipeService();
@@ -53,6 +71,13 @@ public class UpdateViewController {
         System.out.println("UpdateViewController initialized");
         if (ingredientContainer.getChildren().isEmpty()) {
             addIngredient();
+        }
+        if (uploadedImgPath != null && !uploadedImgPath.isEmpty()) {
+            imgPreview.setImage(new Image(new File(uploadedImgPath).toURI().toString()));
+            imgHint.setVisible(false);
+        } else {
+            imgPreview.setImage(null);
+            imgHint.setVisible(true);
         }
     }
 
@@ -109,7 +134,30 @@ public class UpdateViewController {
 
     @FXML
     public void uploadClicked() {
-        System.out.println("Upload button clicked");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+        File file = fileChooser.showOpenDialog(uploadButton.getScene().getWindow());
+        if (file != null) {
+            try {
+                String ext = file.getName().substring(file.getName().lastIndexOf('.'));
+                String newName = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + ext;
+                File dest = new File("imgs", newName);
+                Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                uploadedImgPath = "imgs/" + newName;
+                // Preview the image
+                imgPreview.setImage(new Image(dest.toURI().toString()));
+                imgHint.setVisible(false);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Image uploaded successfully!", ButtonType.OK);
+                alert.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Image upload failed!", ButtonType.OK);
+                alert.showAndWait();
+            }
+        }
     }
 
     @FXML
@@ -178,9 +226,9 @@ public class UpdateViewController {
 
     public void handleUpdateRecipe() {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("确认更新");
+        confirmAlert.setTitle("Confirm Update");
         confirmAlert.setHeaderText(null);
-        confirmAlert.setContentText("确定要保存对菜谱的修改吗？");
+        confirmAlert.setContentText("Are you sure you want to save the changes to the recipe?");
         var result = confirmAlert.showAndWait();
         if (result.isEmpty() || result.get() != ButtonType.OK) {
             return; 
@@ -191,7 +239,76 @@ public class UpdateViewController {
         String cookTime = cookTimeField.getText();
         String serve = serveField.getText();
         String instruction = instructionField.getText();
-        String imgAddr = "https://i.imgur.com/3dVB5B9.jpg";
+        String imgAddr = uploadedImgPath != null ? uploadedImgPath : "https://i.imgur.com/3dVB5B9.jpg";
+
+        // 校验主表单
+        if (title == null || title.trim().isEmpty()) {
+            new Alert(Alert.AlertType.ERROR, "Title cannot be empty").showAndWait();
+            return;
+        }
+        if (instruction == null || instruction.trim().isEmpty()) {
+            new Alert(Alert.AlertType.ERROR, "Instruction cannot be empty").showAndWait();
+            return;
+        }
+        int serveInt, prepInt, cookInt;
+        try {
+            serveInt = Integer.parseInt(serve);
+            if (serveInt <= 0) throw new Exception();
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Servings must be a positive integer").showAndWait();
+            return;
+        }
+        try {
+            prepInt = Integer.parseInt(prepTime);
+            if (prepInt < 0) throw new Exception();
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Prep Time must be a non-negative integer").showAndWait();
+            return;
+        }
+        try {
+            cookInt = Integer.parseInt(cookTime);
+            if (cookInt < 0) throw new Exception();
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Cook Time must be a non-negative integer").showAndWait();
+            return;
+        }
+        for (var node : ingredientContainer.getChildren()) {
+            if (node instanceof HBox hbox) {
+                List<javafx.scene.Node> fields = hbox.getChildren();
+                TextField nameField = null;
+                TextField quantityField = null;
+                TextField unitField = null;
+                int fieldCount = 0;
+                for (javafx.scene.Node child : fields) {
+                    if (child instanceof TextField tf) {
+                        if (fieldCount == 0) {
+                            nameField = tf;
+                        } else if (fieldCount == 1) {
+                            quantityField = tf;
+                        } else if (fieldCount == 2) {
+                            unitField = tf;
+                        }
+                        fieldCount++;
+                    }
+                }
+                if (nameField == null || nameField.getText().trim().isEmpty()) {
+                    new Alert(Alert.AlertType.ERROR, "Ingredient Name cannot be empty").showAndWait();
+                    return;
+                }
+                if (unitField == null || unitField.getText().trim().isEmpty()) {
+                    new Alert(Alert.AlertType.ERROR, "Ingredient Unit cannot be empty").showAndWait();
+                    return;
+                }
+                int quantity;
+                try {
+                    quantity = Integer.parseInt(quantityField.getText());
+                    if (quantity <= 0) throw new Exception();
+                } catch (Exception e) {
+                    new Alert(Alert.AlertType.ERROR, "Ingredient Amount must be a positive integer").showAndWait();
+                    return;
+                }
+            }
+        }
 
         Recipe recipe = new Recipe();
         recipe.setRecipeId(previousData.getRecipe().getRecipeId());
@@ -252,7 +369,7 @@ public class UpdateViewController {
         RecipeDetailRequest request = new RecipeDetailRequest(recipe, ingredients, deletedPairIds);
         boolean success = recipeService.updateRecipe(request);
         if (success) {
-            Alert info = new Alert(Alert.AlertType.INFORMATION, "菜谱更新成功！", ButtonType.OK);
+            Alert info = new Alert(Alert.AlertType.INFORMATION, "Recipe updated successfully!", ButtonType.OK);
             info.showAndWait();
 
             if (updateCallback != null) {

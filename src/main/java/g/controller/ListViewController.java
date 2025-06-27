@@ -13,28 +13,48 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 
+/**
+ * Controller for the recipe list view. Handles the display and selection of recipes.
+ *
+ * @author Junzhe Luo
+ */
 public class ListViewController implements Initializable {
 
+    /** Service for recipe operations */
     private final RecipeService recipeService;
+    /** Service for category operations */
     private final CategoryService categoryService;
 
+    /** ListView for displaying recipes */
     @FXML
     private ListView<RecipeSummaryResponse> listView;
 
+    /**
+     * Constructor initializes the recipe and category services.
+     */
     public ListViewController() {
         this.recipeService = new RecipeService();
         this.categoryService = new CategoryService();
     }
 
+    /**
+     * Fetches all recipe summaries from the service.
+     * @return List of RecipeSummaryResponse objects
+     */
     public List<RecipeSummaryResponse> fetchAllRecipeSummary() {
         System.out.println("Fetching recipe summary...");
         return recipeService.getAllRecipeSummary();
     }
 
+    /**
+     * Initializes the controller and sets up the ListView.
+     * @param location The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("ListViewController 初始化！");
-        System.out.println("ListView 元素是否为空：" + (listView == null));
+        System.out.println("ListViewController initialized!");
+        System.out.println("ListView element is null: " + (listView == null));
 
         List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
@@ -47,7 +67,7 @@ public class ListViewController implements Initializable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.getTitle());  // 显示你想要的字段
+                    setText(item.getTitle());
                 }
             }
         });
@@ -60,25 +80,47 @@ public class ListViewController implements Initializable {
         });
     }
 
+    /**
+     * Loads recipes by category ID and displays them in the ListView.
+     * @param categoryId The category ID
+     */
     public void loadRecipesByCategory(int categoryId) {
         System.out.println("Loading recipes for category ID: " + categoryId);
         List<RecipeSummaryResponse> rawList = categoryService.getRecipeSummaryByCategoryId(categoryId);
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
         listView.setItems(observableList);
-        System.out.println("ListView 已加载分类下的食谱！");
+        System.out.println("ListView loaded recipes for the category!");
     }
 
+    /**
+     * Refreshes the recipe list with all recipes.
+     */
     public void refreshList() {
         List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
         listView.setItems(observableList);
-        System.out.println("ListView 已刷新！");
+        System.out.println("ListView refreshed!");
     }
 
-    public void refreshListAndRetainSelection(int recipeIdToKeepSelected) {
-        refreshList(); // 原来的刷新逻辑
+    /**
+     * Refreshes the recipe list for a specific category.
+     * @param categoryId The category ID
+     */
+    public void refreshListInCategory(int categoryId) {
+        System.out.println("Refreshing list in category ID: " + categoryId);
+        List<RecipeSummaryResponse> rawList = categoryService.getRecipeSummaryByCategoryId(categoryId);
+        ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(rawList);
+        listView.setItems(observableList);
+        System.out.println("ListView refreshed in category!");
+    }
 
-        // 找到刚才的那个 recipe 对象，并重新选中
+    /**
+     * Refreshes the recipe list and retains the selection of a specific recipe.
+     * @param recipeIdToKeepSelected The recipe ID to keep selected
+     */
+    public void refreshListAndRetainSelection(int recipeIdToKeepSelected) {
+        refreshList();
+        // Find and reselect the previously selected recipe
         for (RecipeSummaryResponse item : listView.getItems()) {
             if (item.getRecipeId() == recipeIdToKeepSelected) {
                 listView.getSelectionModel().select(item);
@@ -87,6 +129,10 @@ public class ListViewController implements Initializable {
         }
     }
 
+    /**
+     * Searches recipes by keyword and updates the ListView.
+     * @param keyword The search keyword
+     */
     public void search(String keyword) {
         List<RecipeSummaryResponse> rawList = fetchAllRecipeSummary();
         List<RecipeSummaryResponse> filteredList;
@@ -99,17 +145,58 @@ public class ListViewController implements Initializable {
         }
         ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(filteredList);
         listView.setItems(observableList);
-        System.out.println("ListView 已根据关键字过滤并刷新！");
+        System.out.println("ListView filtered and refreshed by keyword!");
     }
 
-    // Callback for recipe item selection
-    public interface ActionCallback {
+    /**
+     * Searches recipes in a specific category by keyword and updates the ListView.
+     * @param categoryId The category ID
+     * @param keyword The search keyword
+     */
+    public void searchInCategory(int categoryId, String keyword) {
+        List<RecipeSummaryResponse> rawList = categoryService.getRecipeSummaryByCategoryId(categoryId);
+        List<RecipeSummaryResponse> filteredList;
+        if (keyword == null || keyword.isBlank()) {
+            filteredList = rawList;
+        } else {
+            filteredList = rawList.stream()
+                    .filter(item -> item.getTitle() != null && item.getTitle().toLowerCase().contains(keyword.toLowerCase()))
+                    .toList();
+        }
+        ObservableList<RecipeSummaryResponse> observableList = FXCollections.observableArrayList(filteredList);
+        listView.setItems(observableList);
+        System.out.println("ListView filtered and refreshed by category and keyword!");
+    }
 
+    /**
+     * Clears the recipe list in the ListView.
+     */
+    public void clearList() {
+        listView.getItems().clear();
+    }
+
+    /**
+     * Callback interface for recipe item selection.
+     */
+    public interface ActionCallback {
         void onRecipeSelected(int recipeId);
     }
     private ActionCallback callback;
 
+    /**
+     * Sets the callback for recipe selection.
+     * @param callback The callback to set
+     */
     public void setCallback(ActionCallback callback) {
         this.callback = callback;
+    }
+
+    /**
+     * Sets the visibility and managed state of the ListView.
+     * @param visible true to show the ListView, false to hide it
+     */
+    public void setListViewVisible(boolean visible) {
+        listView.setVisible(visible);
+        listView.setManaged(visible);
     }
 }
