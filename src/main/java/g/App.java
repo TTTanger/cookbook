@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import g.utils.DBUtil;
 
 /**
  * JavaFX App
@@ -17,7 +18,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("Main"), 1200, 600);
+        scene = new Scene(loadFXML("main"), 1200, 600);
         scene.getStylesheets().add(getClass().getResource("/g/app.css").toExternalForm());
         stage.setScene(scene);
         stage.setMinWidth(1200); 
@@ -35,6 +36,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        DBUtil.initializeDatabase();
         launch();
     }
 

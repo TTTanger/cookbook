@@ -119,12 +119,14 @@ public class CategoryService {
 
             List<Category> categoryList = categoryDAO.getAllCategories();
 
-            for (Category category : categoryList) {
-                CategoryResponse response = new CategoryResponse(
-                    category.getCategoryId(),
-                    category.getCategoryName()
-                );
-                responses.add(response);
+            if (categoryList != null) {
+                for (Category category : categoryList) {
+                    CategoryResponse response = new CategoryResponse(
+                        category.getCategoryId(),
+                        category.getCategoryName()
+                    );
+                    responses.add(response);
+                }
             }
 
             return responses;

@@ -11,7 +11,6 @@
       spacing="18.0"
       style="-fx-background-color: #f8f9fa;"
       prefHeight="600.0" prefWidth="1100.0">
-    <!-- 左侧分类 -->
     <VBox fx:id="leftPane"
           spacing="18.0"
           style="-fx-padding: 24 16 24 24; -fx-background-color: #ffffff; -fx-background-radius: 12;"
@@ -20,10 +19,10 @@
         <fx:include fx:id="categoryList" source="CategoryList.fxml" />
         <Button fx:id="createCategoryButton"
                 text="Create Category"
+                onAction="#onCreateClicked"
                 style="-fx-background-radius: 8; -fx-background-color: #e7f5ff; -fx-text-fill: #228be6; -fx-font-size: 14px" />
     </VBox>
 
-    <!-- 中间面板 -->
     <VBox fx:id="centerPane"
           spacing="18.0"
           style="-fx-padding: 24 16 24 0; -fx-background-color: #ffffff; -fx-background-radius: 12;"
@@ -34,7 +33,6 @@
         <Button fx:id="refreshButton" text="Refresh" onAction="#refreshList" />
     </VBox>
 
-    <!-- 右侧详情 -->
     <VBox fx:id="rightPane"
           spacing="10.0"
           style="-fx-padding: 24 24 24 0; -fx-background-color: #ffffff; -fx-background-radius: 12;"
